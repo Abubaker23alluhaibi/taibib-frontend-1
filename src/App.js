@@ -22,6 +22,12 @@ import DoctorCalendar from './DoctorCalendar';
 import DoctorAnalyticsPage from './DoctorAnalyticsPage';
 import i18n from './i18n';
 
+// التحقق من متغيرات البيئة
+console.log('🔍 Environment Check:');
+console.log('🔍 REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
+console.log('🔍 REACT_APP_ENV:', process.env.REACT_APP_ENV);
+console.log('🔍 NODE_ENV:', process.env.NODE_ENV);
+
 function App() {
   // حالة مركزية للمواعيد للطبيب
   const [doctorAppointments, setDoctorAppointments] = useState([]);
