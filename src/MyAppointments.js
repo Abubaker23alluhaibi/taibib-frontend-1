@@ -31,7 +31,7 @@ function MyAppointments() {
 
   const fetchMyAppointments = async () => {
     try {
-      const res = await fetch(`http://192.168.1.100:5000/user-appointments/${user._id}`);
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/user-appointments/${user._id}`);
       if (res.ok) {
         const data = await res.json();
         
@@ -78,7 +78,7 @@ function MyAppointments() {
 
   const cancelAppointment = async (appointmentId) => {
     try {
-      const res = await fetch(`http://192.168.1.100:5000/appointments/${appointmentId}`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/appointments/${appointmentId}`, {
         method: 'DELETE'
       });
       if (res.ok) {

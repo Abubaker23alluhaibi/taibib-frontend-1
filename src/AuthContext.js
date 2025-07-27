@@ -73,7 +73,7 @@ export const AuthProvider = ({ children }) => {
 
   const signIn = async (email, password, loginType) => {
     try {
-      const res = await fetch('http://192.168.1.100:5000/login', {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, loginType })

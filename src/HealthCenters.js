@@ -20,7 +20,7 @@ function HealthCenters() {
 
   const fetchHealthCenters = async () => {
     try {
-      const response = await fetch('http://192.168.1.100:5000/health-centers');
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/health-centers`);
       if (response.ok) {
         const data = await response.json();
         setHealthCenters(data);
