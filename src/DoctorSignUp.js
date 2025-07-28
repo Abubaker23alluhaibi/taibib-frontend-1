@@ -234,6 +234,13 @@ function DoctorSignUp() {
       setError(t('add_at_least_one_time'));
       return;
     }
+    
+    // التحقق من وجود الوثائق المطلوبة
+    if (!form.image || !form.idFront || !form.idBack || !form.syndicateFront || !form.syndicateBack) {
+      setError('يرجى رفع جميع الوثائق المطلوبة');
+      return;
+    }
+    
     // تجهيز البيانات للإرسال
     const formData = new FormData();
     formData.append('name', form.name);
@@ -247,22 +254,33 @@ function DoctorSignUp() {
     formData.append('about', form.about);
     if (form.experienceYears) formData.append('experienceYears', form.experienceYears);
     formData.append('workTimes', JSON.stringify(workTimes));
+    
+    // رفع الصور والوثائق
     if (form.image) formData.append('image', form.image);
     if (form.idFront) formData.append('idFront', form.idFront);
     if (form.idBack) formData.append('idBack', form.idBack);
     if (form.syndicateFront) formData.append('syndicateFront', form.syndicateFront);
     if (form.syndicateBack) formData.append('syndicateBack', form.syndicateBack);
+    
     try {
-      const res = await fetch(process.env.REACT_APP_API_URL + '/register-doctor', {
+      console.log('📤 إرسال بيانات الطبيب مع الوثائق...');
+      const res = await fetch(process.env.REACT_APP_API_URL + '/api/register-doctor', {
         method: 'POST',
         body: formData
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || t('error_occurred'));
-    setSuccess(true);
+      
+      if (!res.ok) {
+        console.error('❌ خطأ في تسجيل الطبيب:', data);
+        throw new Error(data.error || t('error_occurred'));
+      }
+      
+      console.log('✅ تم تسجيل الطبيب بنجاح:', data);
+      setSuccess(true);
     } catch (err) {
+      console.error('❌ خطأ في تسجيل الطبيب:', err);
       setError(err.message);
-  }
+    }
   };
 
   // 1. أضف دالة الانتقال للخطوة الرابعة
