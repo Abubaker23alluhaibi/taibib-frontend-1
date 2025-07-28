@@ -6,11 +6,11 @@ const ProtectedRoute = ({ children, requiredUserType = null }) => {
   const { user, profile, loading } = useAuth();
   const location = useLocation();
 
-  console.log('🔒 ProtectedRoute:', { 
-    requiredUserType, 
-    userType: user?.user_type, 
-    hasUser: !!user, 
-    loading 
+    console.log('🔒 ProtectedRoute:', {
+    requiredUserType,
+    userType: user?.user_type || user?.role,
+    hasUser: !!user,
+    loading
   });
 
   if (loading) {
@@ -34,16 +34,16 @@ const ProtectedRoute = ({ children, requiredUserType = null }) => {
     return <Navigate to={`/?redirect=${encodeURIComponent(location.pathname + location.search)}`} replace />;
   }
 
-  if (requiredUserType && user?.user_type !== requiredUserType) {
-    console.log('❌ نوع المستخدم غير صحيح:', { 
-      required: requiredUserType, 
-      actual: user?.user_type 
+    if (requiredUserType && (user?.user_type !== requiredUserType && user?.role !== requiredUserType)) {
+    console.log('❌ نوع المستخدم غير صحيح:', {
+      required: requiredUserType,
+      actual: user?.user_type
     });
-    
+
     // Redirect based on user type
-    if (user?.user_type === 'doctor') {
+    if (user?.user_type === 'doctor' || user?.role === 'doctor') {
       return <Navigate to="/doctor-dashboard" replace />;
-    } else if (user?.user_type === 'admin') {
+    } else if (user?.user_type === 'admin' || user?.role === 'admin') {
       return <Navigate to="/admin-login" replace />;
     } else {
       return <Navigate to="/home" replace />;

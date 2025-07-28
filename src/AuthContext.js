@@ -81,12 +81,18 @@ export const AuthProvider = ({ children }) => {
       
       const data = await res.json();
       
-      if (res.ok) {
+            if (res.ok) {
         // حفظ بيانات المستخدم في localStorage
-        const userData = loginType === 'doctor' ? data.doctor : data.user;
+        const userData = data.user || data.doctor || data;
+        
+        // التأكد من وجود user_type
+        if (!userData.user_type && userData.role) {
+          userData.user_type = userData.role;
+        }
+        
         setUser(userData);
         setProfile(userData);
-        
+
         localStorage.setItem('user', JSON.stringify(userData));
         localStorage.setItem('profile', JSON.stringify(userData));
 
