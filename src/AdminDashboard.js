@@ -201,7 +201,7 @@ function AdminDashboard() {
     }
     
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/doctors/${doctorId}/approve`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/doctors/${doctorId}/approve`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' }
       });
@@ -233,7 +233,7 @@ function AdminDashboard() {
     }
     
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/doctors/${doctorId}/reject`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/doctors/${doctorId}/reject`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' }
         });
