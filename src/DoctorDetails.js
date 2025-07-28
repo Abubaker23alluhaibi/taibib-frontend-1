@@ -197,8 +197,24 @@ useEffect(() => {
       });
       const data = await res.json();
       
-      
       if (res.ok) {
+        // إنشاء إشعار للطبيب
+        try {
+          await fetch(`${process.env.REACT_APP_API_URL}/notifications`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              doctorId: doctor._id,
+              type: 'new_appointment',
+              message: `تم حجز موعد جديد من قبل ${profile?.first_name || 'مستخدم'} في ${bookingData.date} الساعة ${bookingData.time}`,
+              appointmentId: data._id || data.appointmentId
+            })
+          });
+        } catch (notificationError) {
+          console.error('خطأ في إنشاء الإشعار:', notificationError);
+          // لا نوقف العملية إذا فشل الإشعار
+        }
+        
         setSuccess('تم حجز الموعد بنجاح!');
         setSelectedDate(null);
         setSelectedTime('');

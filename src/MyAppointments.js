@@ -204,6 +204,17 @@ function MyAppointments() {
     return appointments.sort((a, b) => {
       const dateA = new Date(a.date);
       const dateB = new Date(b.date);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      // مواعيد اليوم أولاً
+      const isTodayA = dateA.toDateString() === today.toDateString();
+      const isTodayB = dateB.toDateString() === today.toDateString();
+      
+      if (isTodayA && !isTodayB) return -1;
+      if (!isTodayA && isTodayB) return 1;
+      
+      // ثم ترتيب حسب التاريخ
       return dateA - dateB;
     });
   };
@@ -357,7 +368,86 @@ function MyAppointments() {
         </div>
       ) : (
         <div style={{display:'flex', flexDirection:'column', gap:'1rem'}}>
-          {uniqueDisplayedAppointments.map(appointment => {
+          {/* قسم مواعيد اليوم */}
+          {todayAppointments.length > 0 && (
+            <div style={{background:'#fff3e0', borderRadius:16, boxShadow:'0 2px 12px #ff980011', padding:'1.5rem', borderLeft:'4px solid #ff9800'}}>
+              <div style={{display:'flex', alignItems:'center', gap:'0.5rem', marginBottom:'1rem'}}>
+                <span style={{fontSize:'1.5rem'}}>🎯</span>
+                <h3 style={{color:'#e65100', margin:0, fontSize:'1.3rem', fontWeight:700}}>
+                  {t('today_appointments')} ({formatDate(new Date().toISOString().slice(0,10), t)})
+                </h3>
+              </div>
+              <div style={{display:'flex', flexDirection:'column', gap:'0.8rem'}}>
+                {todayAppointments.map(appointment => {
+                  const isSpecial = appointment.type === 'special_appointment' || (appointment.reason && appointment.reason.includes('خاص'));
+                  return (
+                    <div key={`today-${appointment.doctorId}-${appointment.date}-${appointment.time}`} style={{
+                      background:'#fff',
+                      borderRadius:12,
+                      padding:'1rem',
+                      borderLeft:'3px solid #ff9800',
+                      boxShadow:'0 1px 8px #ff980022'
+                    }}>
+                      <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:'0.5rem'}}>
+                        <div style={{flex:1}}>
+                          <div style={{display:'flex', alignItems:'center', gap:'0.5rem', marginBottom:'0.3rem'}}>
+                            <span style={{fontSize:'1.1rem'}}>🎯</span>
+                            <span style={{
+                              background:'#ff9800',
+                              color:'#fff',
+                              padding:'0.2rem 0.6rem',
+                              borderRadius:8,
+                              fontSize:'0.8rem',
+                              fontWeight:700
+                            }}>
+                              {t('today')}
+                            </span>
+                            {isSpecial && (
+                              <span style={{fontSize:'1.2rem'}} title={t('special_appointment')}>⭐</span>
+                            )}
+                          </div>
+                          <h4 style={{color:'#e65100', margin:'0 0 0.3rem 0', fontSize:'1.1rem'}}>
+                            د. {appointment.doctorName || appointment.doctorId?.name || 'دكتور غير محدد'}
+                          </h4>
+                          <div style={{color:'#666', fontSize:'0.9rem'}}>
+                            🕐 {appointment.time}
+                          </div>
+                          {appointment.reason && (
+                            <div style={{color:'#666', fontSize:'0.85rem', marginTop:'0.2rem'}}>
+                              💬 {appointment.reason}
+                            </div>
+                          )}
+                        </div>
+                        <div style={{display:'flex', gap:'0.3rem'}}>
+                          <button 
+                            onClick={() => {
+                              setSelectedAppointmentId(appointment._id);
+                              setShowConfirm(true);
+                            }}
+                            style={{
+                              background:'#e53935',
+                              color:'#fff',
+                              border:'none',
+                              borderRadius:6,
+                              padding:'0.4rem 0.8rem',
+                              fontWeight:700,
+                              cursor:'pointer',
+                              fontSize:'0.8rem'
+                            }}
+                          >
+                            {t('cancel_appointment')}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* باقي المواعيد */}
+          {uniqueDisplayedAppointments.filter(apt => !isTodayAppointment(apt.date)).map(appointment => {
             const status = getAppointmentStatus(appointment.date);
             const statusColor = getStatusColor(status);
             const statusText = getStatusText(status);
