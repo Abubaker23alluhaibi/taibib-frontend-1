@@ -57,6 +57,15 @@ function AdminDashboard() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const { t } = useTranslation();
+  
+  // دالة مساعدة لمسار الصور والوثائق
+  const getImageUrl = (img) => {
+    if (!img) return null;
+    if (img.startsWith('/uploads/')) return process.env.REACT_APP_API_URL + img;
+    if (img.startsWith('http')) return img;
+    return null;
+  };
+  
   // حالة اليوم المختار في التقويم
   const [selectedDate, setSelectedDate] = useState('');
   // حالة التقويم
@@ -1356,57 +1365,57 @@ function AdminDashboard() {
                         <h4 style={{margin:'0 0 1rem 0', color:'#e65100'}}>📋 الوثائق المطلوبة للمراجعة:</h4>
                         
                         <div style={{display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(200px, 1fr))', gap:'1rem'}}>
-                                                     {/* الصورة الشخصية */}
-                           {doctor.imageUrl && (
-                             <div style={{textAlign:'center'}}>
-                               <h5 style={{margin:'0 0 0.5rem 0', color:'#666'}}>الصورة الشخصية</h5>
-                               <img 
-                                 src={doctor.imageUrl} 
-                                 alt="الصورة الشخصية" 
-                                 style={{
-                                   width:'100px', 
-                                   height:'100px', 
-                                   objectFit:'cover', 
-                                   borderRadius:8,
-                                   border:'2px solid #ddd',
-                                   cursor:'pointer',
-                                   transition:'transform 0.2s'
-                                 }}
-                                 onClick={() => window.open(doctor.imageUrl, '_blank')}
-                                 onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'}
-                                 onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
-                                 onError={(e) => {
-                                   e.target.style.display = 'none';
-                                   e.target.nextSibling.style.display = 'block';
-                                 }}
-                               />
-                               <div style={{display:'none', padding:'1rem', background:'#f5f5f5', borderRadius:8, color:'#666'}}>
-                                 الصورة غير متاحة
-                               </div>
-                               <p style={{margin:'0.5rem 0 0 0', fontSize:'0.8rem', color:'#999'}}>انقر للتكبير</p>
-                             </div>
-                           )}
+                          {/* الصورة الشخصية */}
+                          {(doctor.image || doctor.profileImage || doctor.imageUrl) && (
+                            <div style={{textAlign:'center'}}>
+                              <h5 style={{margin:'0 0 0.5rem 0', color:'#666'}}>الصورة الشخصية</h5>
+                              <img 
+                                src={getImageUrl(doctor.image || doctor.profileImage || doctor.imageUrl)} 
+                                alt="الصورة الشخصية" 
+                                style={{
+                                  width:'100px', 
+                                  height:'100px', 
+                                  objectFit:'cover', 
+                                  borderRadius:8,
+                                  border:'2px solid #ddd',
+                                  cursor:'pointer',
+                                  transition:'transform 0.2s'
+                                }}
+                                onClick={() => window.open(getImageUrl(doctor.image || doctor.profileImage || doctor.imageUrl), '_blank')}
+                                onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'}
+                                onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
+                                onError={(e) => {
+                                  e.target.style.display = 'none';
+                                  e.target.nextSibling.style.display = 'block';
+                                }}
+                              />
+                              <div style={{display:'none', padding:'1rem', background:'#f5f5f5', borderRadius:8, color:'#666'}}>
+                                الصورة غير متاحة
+                              </div>
+                              <p style={{margin:'0.5rem 0 0 0', fontSize:'0.8rem', color:'#999'}}>انقر للتكبير</p>
+                            </div>
+                          )}
 
                           {/* الهوية الوطنية - الوجه الأمامي */}
-                          {doctor.idFrontUrl && (
+                          {(doctor.idFront || doctor.idFrontUrl) && (
                             <div style={{textAlign:'center'}}>
                               <h5 style={{margin:'0 0 0.5rem 0', color:'#666'}}>الهوية الوطنية - الوجه الأمامي</h5>
                               <p style={{margin:'0 0 0.5rem 0', fontSize:'0.8rem', color:'#999'}}>🔒 وثيقة حساسة</p>
                               <img 
-                                src={doctor.idFrontUrl} 
+                                src={getImageUrl(doctor.idFront || doctor.idFrontUrl)} 
                                 alt="الهوية الوطنية - الوجه الأمامي" 
-                                                                 style={{
-                                   width:'150px', 
-                                   height:'100px', 
-                                   objectFit:'cover', 
-                                   borderRadius:8,
-                                   border:'2px solid #ddd',
-                                   cursor:'pointer',
-                                   transition:'transform 0.2s'
-                                 }}
-                                 onClick={() => window.open(doctor.idFrontUrl, '_blank')}
-                                 onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'}
-                                 onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
+                                style={{
+                                  width:'150px', 
+                                  height:'100px', 
+                                  objectFit:'cover', 
+                                  borderRadius:8,
+                                  border:'2px solid #ddd',
+                                  cursor:'pointer',
+                                  transition:'transform 0.2s'
+                                }}
+                                onClick={() => window.open(getImageUrl(doctor.idFront || doctor.idFrontUrl), '_blank')}
+                                onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'}
+                                onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
                                 onError={(e) => {
                                   e.target.style.display = 'none';
                                   e.target.nextSibling.style.display = 'block';
@@ -1419,25 +1428,25 @@ function AdminDashboard() {
                           )}
 
                           {/* الهوية الوطنية - الوجه الخلفي */}
-                          {doctor.idBackUrl && (
+                          {(doctor.idBack || doctor.idBackUrl) && (
                             <div style={{textAlign:'center'}}>
                               <h5 style={{margin:'0 0 0.5rem 0', color:'#666'}}>الهوية الوطنية - الوجه الخلفي</h5>
                               <p style={{margin:'0 0 0.5rem 0', fontSize:'0.8rem', color:'#999'}}>🔒 وثيقة حساسة</p>
                               <img 
-                                src={doctor.idBackUrl} 
+                                src={getImageUrl(doctor.idBack || doctor.idBackUrl)} 
                                 alt="الهوية الوطنية - الوجه الخلفي" 
-                                                                 style={{
-                                   width:'150px', 
-                                   height:'100px', 
-                                   objectFit:'cover', 
-                                   borderRadius:8,
-                                   border:'2px solid #ddd',
-                                   cursor:'pointer',
-                                   transition:'transform 0.2s'
-                                 }}
-                                 onClick={() => window.open(doctor.idBackUrl, '_blank')}
-                                 onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'}
-                                 onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
+                                style={{
+                                  width:'150px', 
+                                  height:'100px', 
+                                  objectFit:'cover', 
+                                  borderRadius:8,
+                                  border:'2px solid #ddd',
+                                  cursor:'pointer',
+                                  transition:'transform 0.2s'
+                                }}
+                                onClick={() => window.open(getImageUrl(doctor.idBack || doctor.idBackUrl), '_blank')}
+                                onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'}
+                                onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
                                 onError={(e) => {
                                   e.target.style.display = 'none';
                                   e.target.nextSibling.style.display = 'block';
@@ -1450,25 +1459,25 @@ function AdminDashboard() {
                           )}
 
                           {/* بطاقة نقابة الأطباء - الوجه الأمامي */}
-                          {doctor.syndicateFrontUrl && (
+                          {(doctor.syndicateFront || doctor.syndicateFrontUrl) && (
                             <div style={{textAlign:'center'}}>
                               <h5 style={{margin:'0 0 0.5rem 0', color:'#666'}}>بطاقة نقابة الأطباء - الوجه الأمامي</h5>
                               <p style={{margin:'0 0 0.5rem 0', fontSize:'0.8rem', color:'#999'}}>🏥 وثيقة مهنية</p>
                               <img 
-                                src={doctor.syndicateFrontUrl} 
+                                src={getImageUrl(doctor.syndicateFront || doctor.syndicateFrontUrl)} 
                                 alt="بطاقة نقابة الأطباء - الوجه الأمامي" 
-                                                                 style={{
-                                   width:'150px', 
-                                   height:'100px', 
-                                   objectFit:'cover', 
-                                   borderRadius:8,
-                                   border:'2px solid #ddd',
-                                   cursor:'pointer',
-                                   transition:'transform 0.2s'
-                                 }}
-                                 onClick={() => window.open(doctor.syndicateFrontUrl, '_blank')}
-                                 onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'}
-                                 onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
+                                style={{
+                                  width:'150px', 
+                                  height:'100px', 
+                                  objectFit:'cover', 
+                                  borderRadius:8,
+                                  border:'2px solid #ddd',
+                                  cursor:'pointer',
+                                  transition:'transform 0.2s'
+                                }}
+                                onClick={() => window.open(getImageUrl(doctor.syndicateFront || doctor.syndicateFrontUrl), '_blank')}
+                                onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'}
+                                onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
                                 onError={(e) => {
                                   e.target.style.display = 'none';
                                   e.target.nextSibling.style.display = 'block';
@@ -1481,25 +1490,25 @@ function AdminDashboard() {
                           )}
 
                           {/* بطاقة نقابة الأطباء - الوجه الخلفي */}
-                          {doctor.syndicateBackUrl && (
+                          {(doctor.syndicateBack || doctor.syndicateBackUrl) && (
                             <div style={{textAlign:'center'}}>
                               <h5 style={{margin:'0 0 0.5rem 0', color:'#666'}}>بطاقة نقابة الأطباء - الوجه الخلفي</h5>
                               <p style={{margin:'0 0 0.5rem 0', fontSize:'0.8rem', color:'#999'}}>🏥 وثيقة مهنية</p>
                               <img 
-                                src={doctor.syndicateBackUrl} 
+                                src={getImageUrl(doctor.syndicateBack || doctor.syndicateBackUrl)} 
                                 alt="بطاقة نقابة الأطباء - الوجه الخلفي" 
-                                                                 style={{
-                                   width:'150px', 
-                                   height:'100px', 
-                                   objectFit:'cover', 
-                                   borderRadius:8,
-                                   border:'2px solid #ddd',
-                                   cursor:'pointer',
-                                   transition:'transform 0.2s'
-                                 }}
-                                 onClick={() => window.open(doctor.syndicateBackUrl, '_blank')}
-                                 onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'}
-                                 onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
+                                style={{
+                                  width:'150px', 
+                                  height:'100px', 
+                                  objectFit:'cover', 
+                                  borderRadius:8,
+                                  border:'2px solid #ddd',
+                                  cursor:'pointer',
+                                  transition:'transform 0.2s'
+                                }}
+                                onClick={() => window.open(getImageUrl(doctor.syndicateBack || doctor.syndicateBackUrl), '_blank')}
+                                onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'}
+                                onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
                                 onError={(e) => {
                                   e.target.style.display = 'none';
                                   e.target.nextSibling.style.display = 'block';
