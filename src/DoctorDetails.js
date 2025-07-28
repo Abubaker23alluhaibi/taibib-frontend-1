@@ -105,13 +105,17 @@ useEffect(() => {
   // جلب المواعيد المحجوزة لطبيب معين في تاريخ محدد
   const fetchBookedAppointments = async (doctorId, date) => {
     try {
-      if (!user?._id) {
+      const userId = user?._id || user?.id;
+      console.log('🔍 fetchBookedAppointments - user:', user);
+      console.log('🔍 fetchBookedAppointments - userId:', userId);
+      
+      if (!userId) {
         console.log('❌ لا يوجد مستخدم مسجل');
         setBookedTimes([]);
         return;
       }
       
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/appointments/${doctorId}/${date}?patientId=${user._id}`);
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/appointments/${doctorId}/${date}?patientId=${userId}`);
       if (res.ok) {
         const appointments = await res.json();
         const bookedTimeSlots = appointments.map(apt => apt.time);
@@ -172,8 +176,12 @@ useEffect(() => {
   const handleBook = async (e) => {
     e.preventDefault();
     
+    const userId = user?._id || user?.id;
+    console.log('🔍 handleBook - user:', user);
+    console.log('🔍 handleBook - userId:', userId);
+    
     // فحص البيانات قبل الإرسال
-    if (!user?._id) {
+    if (!userId) {
       setSuccess('يجب تسجيل الدخول أولاً');
       return;
     }
@@ -183,7 +191,7 @@ useEffect(() => {
       const authCheck = await fetch(`${process.env.REACT_APP_API_URL}/check-auth`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: user._id })
+        body: JSON.stringify({ userId: userId })
       });
       
       const authData = await authCheck.json();
@@ -218,7 +226,7 @@ useEffect(() => {
     };
 
     const bookingData = {
-      patientId: user._id,
+      patientId: userId,
       doctorId: doctor._id,
       date: formatDate(selectedDate),
       time: selectedTime,
