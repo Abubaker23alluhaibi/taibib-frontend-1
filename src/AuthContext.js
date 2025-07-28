@@ -21,21 +21,21 @@ export const AuthProvider = ({ children }) => {
     if (savedUser) {
       try {
         const userData = JSON.parse(savedUser);
+        console.log('🔍 AuthContext - parsed userData:', userData);
         setUser(userData);
-    
-              } catch (error) {
-          // Error parsing user data
-        }
+      } catch (error) {
+        console.error('❌ AuthContext - Error parsing user data:', error);
+      }
     }
     
     if (savedProfile) {
       try {
         const profileData = JSON.parse(savedProfile);
+        console.log('🔍 AuthContext - parsed profileData:', profileData);
         setProfile(profileData);
-    
-              } catch (error) {
-          // Error parsing profile data
-        }
+      } catch (error) {
+        console.error('❌ AuthContext - Error parsing profile data:', error);
+      }
     }
     
     setLoading(false);
@@ -73,34 +73,46 @@ export const AuthProvider = ({ children }) => {
 
   const signIn = async (email, password, loginType) => {
     try {
+      console.log('🔍 تسجيل الدخول:', { email, loginType });
+      console.log('🔍 API URL:', process.env.REACT_APP_API_URL);
+      
       const res = await fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, loginType })
       });
       
-      const data = await res.json();
+      console.log('🔍 استجابة تسجيل الدخول:', res.status);
       
-            if (res.ok) {
+      const data = await res.json();
+      console.log('🔍 بيانات الاستجابة:', data);
+      
+      if (res.ok) {
         // حفظ بيانات المستخدم في localStorage
         const userData = data.user || data.doctor || data;
+        console.log('🔍 بيانات المستخدم:', userData);
         
         // التأكد من وجود user_type
         if (!userData.user_type && userData.role) {
           userData.user_type = userData.role;
         }
         
+        console.log('🔍 user_type النهائي:', userData.user_type);
+        
         setUser(userData);
         setProfile(userData);
-
+        
         localStorage.setItem('user', JSON.stringify(userData));
         localStorage.setItem('profile', JSON.stringify(userData));
 
+        console.log('✅ تم تسجيل الدخول بنجاح');
         return { data, error: null };
       } else {
-        return { data: null, error: data.error };
+        console.log('❌ خطأ في تسجيل الدخول:', data.message || data.error);
+        return { data: null, error: data.message || data.error };
       }
     } catch (error) {
+      console.error('❌ خطأ في الاتصال:', error);
       return { data: null, error: error.message };
     }
   };
