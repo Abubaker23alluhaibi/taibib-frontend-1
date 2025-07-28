@@ -216,16 +216,29 @@ function MyAppointments() {
 
   // تنظيف إضافي للتأكد من عدم وجود تكرار في العرض
   const uniqueDisplayedAppointments = (() => {
-    // إذا كان المستخدم يريد رؤية مواعيد اليوم فقط
+    console.log('📊 إحصائيات المواعيد:', {
+      اليوم: todayAppointments.length,
+      القادمة: upcomingAppointments.length,
+      السابقة: pastAppointments.length,
+      عرض_السابقة: showPastAppointments
+    });
+    
+    // إذا كان المستخدم يريد رؤية مواعيد اليوم والقادمة فقط
     if (!showPastAppointments) {
-      // عرض مواعيد اليوم فقط
-      const todayOnly = todayAppointments.filter(appointment => {
+      // عرض مواعيد اليوم والقادمة
+      const currentAndUpcoming = [...todayAppointments, ...upcomingAppointments];
+      
+      const uniqueMap = new Map();
+      currentAndUpcoming.forEach(appointment => {
         const key = `${appointment.doctorId}-${appointment.date}-${appointment.time}`;
-        return true; // عرض جميع مواعيد اليوم
+        if (!uniqueMap.has(key)) {
+          uniqueMap.set(key, appointment);
+        }
       });
       
-      console.log('📅 مواعيد اليوم فقط:', todayOnly.length);
-      return sortAppointments(todayOnly);
+      const result = sortAppointments(Array.from(uniqueMap.values()));
+      console.log('📅 مواعيد اليوم والقادمة:', result.length);
+      return result;
     }
     
     // إذا كان المستخدم يريد رؤية جميع المواعيد
@@ -239,7 +252,9 @@ function MyAppointments() {
       }
     });
     
-    return sortAppointments(Array.from(uniqueMap.values()));
+    const result = sortAppointments(Array.from(uniqueMap.values()));
+    console.log('📅 جميع المواعيد:', result.length);
+    return result;
   })();
 
   if (loading) return <div style={{textAlign:'center', marginTop:40}}>{t('loading')}</div>;
@@ -315,6 +330,11 @@ function MyAppointments() {
           <div style={{fontSize:'1.5rem', fontWeight:700, color:'#e53935', marginBottom:'0.5rem'}}>{pastAppointments.length}</div>
           <div style={{color:'#666'}}>{t('past_appointments')}</div>
         </div>
+        <div style={{background:'#fff', borderRadius:16, boxShadow:'0 2px 12px #7c4dff11', padding:'1.5rem', textAlign:'center'}}>
+          <div style={{fontSize:'2rem', marginBottom:'0.5rem'}}>📅</div>
+          <div style={{fontSize:'1.5rem', fontWeight:700, color:'#e53935', marginBottom:'0.5rem'}}>{pastAppointments.length}</div>
+          <div style={{color:'#666'}}>{t('past_appointments')}</div>
+        </div>
       </div>
 
       {/* Appointments List */}
@@ -372,7 +392,7 @@ function MyAppointments() {
                       )}
                     </div>
                     <h3 style={{color:'#7c4dff', margin:'0 0 0.5rem 0', fontSize:'1.3rem'}}>
-                      د. {appointment.doctorName}
+                      د. {appointment.doctorName || appointment.doctorId?.name || 'دكتور غير محدد'}
                     </h3>
                     <div style={{color:'#666', marginBottom:'0.5rem'}}>
                       📅 {formatDate(appointment.date, t)}
