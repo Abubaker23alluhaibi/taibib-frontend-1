@@ -257,21 +257,34 @@ function DoctorAppointments() {
   const isPastAppointment = (dateString) => {
     const appointmentDate = new Date(dateString);
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return appointmentDate < today;
+    
+    // إصلاح مشكلة التاريخ - مقارنة التواريخ بدون الوقت
+    const appointmentDateOnly = new Date(appointmentDate.getFullYear(), appointmentDate.getMonth(), appointmentDate.getDate());
+    const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    
+    return appointmentDateOnly < todayOnly;
   };
 
   const isTodayAppointment = (dateString) => {
     const appointmentDate = new Date(dateString);
     const today = new Date();
-    return appointmentDate.toDateString() === today.toDateString();
+    
+    // إصلاح مشكلة التاريخ - مقارنة التواريخ بدون الوقت
+    const appointmentDateOnly = new Date(appointmentDate.getFullYear(), appointmentDate.getMonth(), appointmentDate.getDate());
+    const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    
+    return appointmentDateOnly.getTime() === todayOnly.getTime();
   };
 
   const isUpcomingAppointment = (dateString) => {
     const appointmentDate = new Date(dateString);
     const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return appointmentDate > today;
+    
+    // إصلاح مشكلة التاريخ - مقارنة التواريخ بدون الوقت
+    const appointmentDateOnly = new Date(appointmentDate.getFullYear(), appointmentDate.getMonth(), appointmentDate.getDate());
+    const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    
+    return appointmentDateOnly > todayOnly;
   };
 
   const getAppointmentStatus = (dateString) => {

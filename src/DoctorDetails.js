@@ -177,12 +177,20 @@ useEffect(() => {
     setBooking(true);
     setSuccess('');
     
+    // إصلاح مشكلة التاريخ - استخدام التاريخ المحلي بدلاً من UTC
+    const formatDate = (date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
     const bookingData = {
       userId: user._id,
       doctorId: doctor._id,
       userName: profile?.first_name || 'مستخدم',
       doctorName: doctor.name,
-      date: selectedDate.toISOString().slice(0,10),
+      date: formatDate(selectedDate),
       time: selectedTime,
       reason: reason || ''
     };
