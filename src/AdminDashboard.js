@@ -123,7 +123,7 @@ function AdminDashboard() {
         fetch(process.env.REACT_APP_API_URL + '/api/users'),
         fetch(process.env.REACT_APP_API_URL + '/api/admin/doctors'),
         fetch(process.env.REACT_APP_API_URL + '/api/appointments'),
-        fetch(process.env.REACT_APP_API_URL + '/api/admin/health-centers')
+        fetch(process.env.REACT_APP_API_URL + '/api/health-centers')
       ]);
 
       console.log('📊 استجابة المستخدمين:', usersRes?.status);
@@ -540,7 +540,7 @@ function AdminDashboard() {
     }
 
     try {
-      const response = await fetch(process.env.REACT_APP_API_URL + '/api/admin/health-centers', {
+      const response = await fetch(process.env.REACT_APP_API_URL + '/api/health-centers', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -593,7 +593,7 @@ function AdminDashboard() {
   const deleteHealthCenter = async (centerId) => {
     if (window.confirm('هل أنت متأكد من حذف هذا المركز الصحي؟')) {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/admin/health-centers/${centerId}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/health-centers/${centerId}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
