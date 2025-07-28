@@ -111,9 +111,9 @@ function AdminDashboard() {
     try {
       // جلب البيانات الحقيقية من قاعدة البيانات
       const [usersRes, doctorsRes, appointmentsRes, healthCentersRes] = await Promise.all([
-        fetch(process.env.REACT_APP_API_URL + '/api/users'),
+        fetch(process.env.REACT_APP_API_URL + '/users'),
         fetch(process.env.REACT_APP_API_URL + '/admin/doctors'),
-        fetch(process.env.REACT_APP_API_URL + '/api/appointments'),
+        fetch(process.env.REACT_APP_API_URL + '/appointments'),
         fetch(process.env.REACT_APP_API_URL + '/admin/health-centers')
       ]);
 
