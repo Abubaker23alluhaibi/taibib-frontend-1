@@ -126,6 +126,7 @@ function AdminDashboard() {
       if (usersRes.ok) {
         const usersData = await usersRes.json();
         console.log('✅ تم جلب المستخدمين:', usersData.length);
+        console.log('📊 بيانات المستخدمين:', usersData);
         setUsers(Array.isArray(usersData) ? usersData : []);
       } else {
         console.log('❌ فشل في جلب المستخدمين:', usersRes.status);
@@ -136,6 +137,7 @@ function AdminDashboard() {
       if (doctorsRes.ok) {
         const doctorsData = await doctorsRes.json();
         console.log('✅ تم جلب الأطباء:', doctorsData.length);
+        console.log('📊 بيانات الأطباء:', doctorsData);
         setDoctors(Array.isArray(doctorsData) ? doctorsData : []);
       } else {
         console.log('❌ فشل في جلب الأطباء:', doctorsRes.status);
@@ -250,7 +252,17 @@ function AdminDashboard() {
 
   // دالة البحث
   const filteredData = () => {
-    if (!searchTerm) return { users, doctors, appointments };
+    console.log('🔍 filteredData - البيانات الحالية:', {
+      users: users.length,
+      doctors: doctors.length,
+      appointments: appointments.length,
+      searchTerm
+    });
+    
+    if (!searchTerm) {
+      console.log('✅ إرجاع البيانات الأصلية بدون فلترة');
+      return { users, doctors, appointments };
+    }
     
     const searchLower = searchTerm.toLowerCase();
     
@@ -270,6 +282,12 @@ function AdminDashboard() {
       appointment.user_name?.toLowerCase().includes(searchLower) ||
       appointment.doctor_name?.toLowerCase().includes(searchLower)
     );
+    
+    console.log('🔍 البيانات المفلترة:', {
+      users: filteredUsers.length,
+      doctors: filteredDoctors.length,
+      appointments: filteredAppointments.length
+    });
     
     return { users: filteredUsers, doctors: filteredDoctors, appointments: filteredAppointments };
   };
@@ -800,11 +818,23 @@ function AdminDashboard() {
             </div>
             <div style={{background:'white', padding:'2rem', borderRadius:16, boxShadow:'0 2px 8px rgba(0,0,0,0.1)'}}>
               <h3 style={{color:'#7c4dff', marginBottom:'1rem'}}>إجمالي المستخدمين</h3>
-              <div style={{fontSize:'2rem', fontWeight:'bold', color:'#333'}}>{filteredData().users.length}</div>
+              <div style={{fontSize:'2rem', fontWeight:'bold', color:'#333'}}>
+                {(() => {
+                  const count = filteredData().users.length;
+                  console.log('📊 عرض عدد المستخدمين:', count);
+                  return count;
+                })()}
+              </div>
             </div>
             <div style={{background:'white', padding:'2rem', borderRadius:16, boxShadow:'0 2px 8px rgba(0,0,0,0.1)'}}>
               <h3 style={{color:'#00bcd4', marginBottom:'1rem'}}>إجمالي الأطباء</h3>
-              <div style={{fontSize:'2rem', fontWeight:'bold', color:'#333'}}>{filteredData().doctors.length}</div>
+              <div style={{fontSize:'2rem', fontWeight:'bold', color:'#333'}}>
+                {(() => {
+                  const count = filteredData().doctors.length;
+                  console.log('📊 عرض عدد الأطباء:', count);
+                  return count;
+                })()}
+              </div>
             </div>
             <div style={{background:'white', padding:'2rem', borderRadius:16, boxShadow:'0 2px 8px rgba(0,0,0,0.1)'}}>
               <h3 style={{color:'#4caf50', marginBottom:'1rem'}}>إجمالي المواعيد</h3>
