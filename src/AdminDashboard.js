@@ -279,8 +279,8 @@ function AdminDashboard() {
     try {
       // جلب جميع الأطباء والمواعيد لحساب الإحصائيات الحقيقية
       const [doctorsResponse, appointmentsResponse] = await Promise.all([
-                  fetch(process.env.REACT_APP_API_URL + '/api/doctors'),
-                  fetch(process.env.REACT_APP_API_URL + '/api/appointments')
+                  fetch(process.env.REACT_APP_API_URL + '/admin/doctors'),
+                  fetch(process.env.REACT_APP_API_URL + '/appointments')
       ]);
 
       if (doctorsResponse.ok && appointmentsResponse.ok) {
