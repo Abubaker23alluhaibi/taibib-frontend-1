@@ -120,10 +120,10 @@ function AdminDashboard() {
     try {
       // جلب البيانات الحقيقية من قاعدة البيانات
       const [usersRes, doctorsRes, appointmentsRes, healthCentersRes] = await Promise.all([
-        fetch(process.env.REACT_APP_API_URL + '/api/users'),
-        fetch(process.env.REACT_APP_API_URL + '/api/admin/doctors'),
-        fetch(process.env.REACT_APP_API_URL + '/api/appointments'),
-        fetch(process.env.REACT_APP_API_URL + '/api/health-centers')
+        fetch(process.env.REACT_APP_API_URL + '/users'),
+        fetch(process.env.REACT_APP_API_URL + '/admin/doctors'),
+        fetch(process.env.REACT_APP_API_URL + '/appointments'),
+        fetch(process.env.REACT_APP_API_URL + '/health-centers')
       ]);
 
       console.log('📊 استجابة المستخدمين:', usersRes?.status);
@@ -210,7 +210,7 @@ function AdminDashboard() {
     }
     
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/doctors/${doctorId}/approve`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/doctors/${doctorId}/approve`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' }
       });
@@ -242,7 +242,7 @@ function AdminDashboard() {
     }
     
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/doctors/${doctorId}/reject`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/doctors/${doctorId}/reject`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' }
         });
@@ -306,8 +306,8 @@ function AdminDashboard() {
     try {
       // جلب جميع الأطباء والمواعيد لحساب الإحصائيات الحقيقية
       const [doctorsResponse, appointmentsResponse] = await Promise.all([
-                  fetch(process.env.REACT_APP_API_URL + '/api/admin/doctors'),
-                  fetch(process.env.REACT_APP_API_URL + '/api/appointments')
+                  fetch(process.env.REACT_APP_API_URL + '/admin/doctors'),
+                  fetch(process.env.REACT_APP_API_URL + '/appointments')
       ]);
 
       if (doctorsResponse.ok && appointmentsResponse.ok) {
@@ -437,7 +437,7 @@ function AdminDashboard() {
     
     if (window.confirm('هل تريد إضافة هذا الطبيب إلى المميزين؟')) {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/doctors/${doctorId}/feature`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/doctors/${doctorId}/feature`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' }
         });
@@ -467,7 +467,7 @@ function AdminDashboard() {
     
     if (window.confirm('هل تريد إزالة هذا الطبيب من المميزين؟')) {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/doctors/${doctorId}/unfeature`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/doctors/${doctorId}/unfeature`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' }
         });
@@ -494,7 +494,7 @@ function AdminDashboard() {
   const deleteUser = async (userId) => {
     if (window.confirm('هل أنت متأكد من حذف هذا المستخدم؟')) {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/${userId}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/users/${userId}`, {
           method: 'DELETE'
         });
         
@@ -514,7 +514,7 @@ function AdminDashboard() {
   const deleteDoctor = async (doctorId) => {
     if (window.confirm('هل أنت متأكد من حذف هذا الطبيب؟')) {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/doctors/${doctorId}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/doctors/${doctorId}`, {
           method: 'DELETE'
         });
         
@@ -540,7 +540,7 @@ function AdminDashboard() {
     }
 
     try {
-      const response = await fetch(process.env.REACT_APP_API_URL + '/api/health-centers', {
+      const response = await fetch(process.env.REACT_APP_API_URL + '/health-centers', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -593,7 +593,7 @@ function AdminDashboard() {
   const deleteHealthCenter = async (centerId) => {
     if (window.confirm('هل أنت متأكد من حذف هذا المركز الصحي؟')) {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/health-centers/${centerId}`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/health-centers/${centerId}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
@@ -1088,7 +1088,7 @@ function AdminDashboard() {
                             const confirmMsg = user.disabled ? 'تفعيل هذا المستخدم؟' : 'تعطيل هذا المستخدم؟';
                             if (!window.confirm(confirmMsg)) return;
                             try {
-                              const response = await fetch(`${process.env.REACT_APP_API_URL}/api/admin/toggle-account/user/${user._id || user.id}`,
+                              const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/toggle-account/user/${user._id || user.id}`,
                                 {
                                   method: 'POST',
                                   headers: { 'Content-Type': 'application/json' },
@@ -1200,7 +1200,7 @@ function AdminDashboard() {
                             if (!window.confirm(confirmMsg)) return;
                             try {
                               const doctorId = doctor._id || doctor.id;
-                              const url = `${process.env.REACT_APP_API_URL}/api/admin/toggle-account/doctor/${doctorId}`;
+                              const url = `${process.env.REACT_APP_API_URL}/admin/toggle-account/doctor/${doctorId}`;
                               console.log('Trying to toggle doctor:', doctorId, url, { disabled: !doctor.disabled });
                               const response = await fetch(url,
                                 {
