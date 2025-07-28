@@ -134,7 +134,14 @@ function UserHome() {
   useEffect(() => {
     if (!user?._id) return;
     fetch(`${process.env.REACT_APP_API_URL}/notifications?userId=${user._id}`)
-      .then(res => res.json())
+      .then(res => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          console.log('❌ خطأ في جلب الإشعارات:', res.status);
+          return [];
+        }
+      })
       .then(data => {
         if (!Array.isArray(data)) {
           setNotifications([]);
@@ -143,6 +150,11 @@ function UserHome() {
         }
         setNotifications(data);
         setNotifCount(data.filter(n => !n.read).length);
+      })
+      .catch(err => {
+        console.error('❌ خطأ في جلب الإشعارات:', err);
+        setNotifications([]);
+        setNotifCount(0);
       });
   }, [user?._id, showNotif]);
 
@@ -150,7 +162,15 @@ function UserHome() {
   useEffect(() => {
     if (showNotif && user?._id && notifCount > 0) {
       setNotifCount(0); // تصفير العداد فوراً
-      fetch(`${process.env.REACT_APP_API_URL}/notifications/mark-read?userId=${user._id}`, { method: 'PUT' });
+      fetch(`${process.env.REACT_APP_API_URL}/notifications/mark-read?userId=${user._id}`, { method: 'PUT' })
+        .then(res => {
+          if (!res.ok) {
+            console.log('❌ خطأ في تحديث حالة قراءة الإشعارات:', res.status);
+          }
+        })
+        .catch(err => {
+          console.error('❌ خطأ في تحديث حالة قراءة الإشعارات:', err);
+        });
     }
   }, [showNotif, user?._id]);
   const loadFavoriteDoctors = async () => {

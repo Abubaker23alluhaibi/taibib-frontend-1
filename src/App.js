@@ -49,8 +49,19 @@ function App() {
   useEffect(() => {
     // يمكن تحسين هذا لاحقاً ليعتمد على تسجيل الدخول
     fetch(`${process.env.REACT_APP_API_URL}/doctor-appointments/1`)
-      .then(res => res.json())
-      .then(data => setDoctorAppointments(Array.isArray(data) ? data : []));
+      .then(res => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          console.log('❌ خطأ في جلب مواعيد الطبيب:', res.status);
+          return [];
+        }
+      })
+      .then(data => setDoctorAppointments(Array.isArray(data) ? data : []))
+      .catch(err => {
+        console.error('❌ خطأ في جلب مواعيد الطبيب:', err);
+        setDoctorAppointments([]);
+      });
   }, []);
 
   return (
