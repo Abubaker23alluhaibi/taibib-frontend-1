@@ -105,11 +105,20 @@ useEffect(() => {
   // جلب المواعيد المحجوزة لطبيب معين في تاريخ محدد
   const fetchBookedAppointments = async (doctorId, date) => {
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/appointments/${doctorId}/${date}`);
+      if (!user?._id) {
+        console.log('❌ لا يوجد مستخدم مسجل');
+        setBookedTimes([]);
+        return;
+      }
+      
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/appointments/${doctorId}/${date}?patientId=${user._id}`);
       if (res.ok) {
         const appointments = await res.json();
         const bookedTimeSlots = appointments.map(apt => apt.time);
         setBookedTimes(bookedTimeSlots);
+      } else if (res.status === 401) {
+        console.log('❌ يجب تسجيل الدخول أولاً');
+        setBookedTimes([]);
       } else {
         console.log('❌ خطأ في جلب المواعيد المحجوزة:', res.status);
         setBookedTimes([]);
@@ -229,11 +238,14 @@ useEffect(() => {
         setSelectedDate(null);
         setSelectedTime('');
         setReason('');
+      } else if (res.status === 401) {
+        setSuccess('يجب تسجيل الدخول أولاً');
       } else {
-        setSuccess(data.error || t('error_booking_appointment'));
+        setSuccess(data.error || data.message || t('error_booking_appointment'));
       }
     } catch (err) {
-              setSuccess(t('error_booking_appointment'));
+      console.error('❌ خطأ في الحجز:', err);
+      setSuccess(t('error_booking_appointment'));
     }
     setBooking(false);
   };
