@@ -204,14 +204,16 @@ useEffect(() => {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
+              userId: user._id,
               doctorId: doctor._id,
-              type: 'new_appointment',
+              title: 'موعد جديد',
               message: `تم حجز موعد جديد من قبل ${profile?.first_name || 'مستخدم'} في ${bookingData.date} الساعة ${bookingData.time}`,
-              appointmentId: data._id || data.appointmentId
+              type: 'appointment'
             })
           });
+          console.log('✅ تم إنشاء إشعار للطبيب بنجاح');
         } catch (notificationError) {
-          console.error('خطأ في إنشاء الإشعار:', notificationError);
+          console.error('❌ خطأ في إنشاء الإشعار:', notificationError);
           // لا نوقف العملية إذا فشل الإشعار
         }
         
