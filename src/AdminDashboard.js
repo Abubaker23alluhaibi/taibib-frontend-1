@@ -1814,7 +1814,7 @@ function AdminDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredAppointments.map(appointment => (
+                  {filteredData().appointments.map(appointment => (
                     <tr key={appointment._id || appointment.id}>
                       <td style={{padding:'1rem', borderBottom:'1px solid #e0e0e0'}}>{appointment.userName || appointment.user_name}</td>
                       <td style={{padding:'1rem', borderBottom:'1px solid #e0e0e0'}}>{appointment.doctorName || appointment.doctor_name}</td>
