@@ -178,6 +178,29 @@ useEffect(() => {
       return;
     }
     
+    // فحص حالة تسجيل الدخول في قاعدة البيانات
+    try {
+      const authCheck = await fetch(`${process.env.REACT_APP_API_URL}/check-auth`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user._id })
+      });
+      
+      const authData = await authCheck.json();
+      
+      if (!authCheck.ok || !authData.authenticated) {
+        console.log('❌ User not authenticated in database');
+        setSuccess('يجب تسجيل الدخول أولاً - المستخدم غير موجود في قاعدة البيانات');
+        return;
+      }
+      
+      console.log('✅ User authenticated in database');
+    } catch (error) {
+      console.error('❌ Error checking authentication:', error);
+      setSuccess('خطأ في التحقق من تسجيل الدخول');
+      return;
+    }
+    
     if (!selectedDate || !selectedTime) {
       setSuccess('يرجى اختيار التاريخ والوقت');
       return;
