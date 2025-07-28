@@ -149,7 +149,7 @@ function UserHome() {
           return;
         }
         setNotifications(data);
-        setNotifCount(data.filter(n => !n.read).length);
+        setNotifCount(data.filter(n => !n.isRead).length);
       })
       .catch(err => {
         console.error('❌ خطأ في جلب الإشعارات:', err);
