@@ -34,21 +34,27 @@ const ProtectedRoute = ({ children, requiredUserType = null }) => {
     return <Navigate to={`/?redirect=${encodeURIComponent(location.pathname + location.search)}`} replace />;
   }
 
-    if (requiredUserType && (user?.user_type !== requiredUserType && user?.role !== requiredUserType)) {
-    console.log('❌ نوع المستخدم غير صحيح:', {
-      required: requiredUserType,
-      actual: user?.user_type
-    });
+    // معالجة أنواع المستخدمين المختلفة
+    const userType = user?.user_type || user?.role;
+    const isUserTypeValid = requiredUserType === 'user' ? 
+      (userType === 'user' || userType === 'patient') : 
+      (userType === requiredUserType);
+    
+    if (requiredUserType && !isUserTypeValid) {
+      console.log('❌ نوع المستخدم غير صحيح:', {
+        required: requiredUserType,
+        actual: userType
+      });
 
-    // Redirect based on user type
-    if (user?.user_type === 'doctor' || user?.role === 'doctor') {
-      return <Navigate to="/doctor-dashboard" replace />;
-    } else if (user?.user_type === 'admin' || user?.role === 'admin') {
-      return <Navigate to="/admin-login" replace />;
-    } else {
-      return <Navigate to="/home" replace />;
+      // Redirect based on user type
+      if (userType === 'doctor') {
+        return <Navigate to="/doctor-dashboard" replace />;
+      } else if (userType === 'admin') {
+        return <Navigate to="/admin-login" replace />;
+      } else {
+        return <Navigate to="/home" replace />;
+      }
     }
-  }
 
   console.log('✅ ProtectedRoute: تم الوصول للصفحة بنجاح');
   return children;

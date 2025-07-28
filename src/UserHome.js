@@ -59,9 +59,18 @@ function UserHome() {
   };
 
   useEffect(() => {
-   fetch(process.env.REACT_APP_API_URL + '/doctors')
-      .then(res => res.json())
+    console.log('🔄 جلب الأطباء من:', process.env.REACT_APP_API_URL + '/doctors');
+    
+    fetch(process.env.REACT_APP_API_URL + '/doctors')
+      .then(res => {
+        console.log('📊 استجابة جلب الأطباء:', res.status);
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then(data => {
+        console.log('✅ تم جلب الأطباء:', data.length);
         // التأكد من أن البيانات مصفوفة
         const doctorsArray = Array.isArray(data) ? data : [];
         // استبعاد الأطباء المعطلين
@@ -77,6 +86,7 @@ function UserHome() {
         setDoctors(sortedDoctors);
       })
       .catch(err => {
+        console.error('❌ خطأ في جلب الأطباء:', err);
         setSuggestedDoctors([]);
         setDoctors([]);
       });
@@ -696,8 +706,14 @@ function UserHome() {
             suggestedDoctors.map((doc, index) => (
               <DoctorCard key={doc._id} doctor={doc} />
             ))
+          ) : suggestedDoctors.length === 0 ? (
+            <div style={{color:'#888', fontWeight:600, fontSize:16, marginTop:20, textAlign:'center', width:'100%'}}>
+              {t('no_doctors_available') || 'لا يوجد أطباء متاحين حالياً'}
+            </div>
           ) : (
-            <div style={{color:'#888', fontWeight:600, fontSize:16, marginTop:20, textAlign:'center', width:'100%'}}>{t('loading_doctors')}</div>
+            <div style={{color:'#888', fontWeight:600, fontSize:16, marginTop:20, textAlign:'center', width:'100%'}}>
+              {t('loading_doctors') || 'جاري تحميل الأطباء...'}
+            </div>
           )}
         </div>
       </div>
