@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <!-- الصفحة الرئيسية -->
+  <url>
+    <loc>https://tabib-iq.com/</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://tabib-iq.com/" />
+    <xhtml:link rel="alternate" hreflang="ku" href="https://tabib-iq.com/ku" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabib-iq.com/en" />
+  </url>
+  
+  <!-- صفحة تسجيل الدخول -->
+  <url>
+    <loc>https://tabib-iq.com/login</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- صفحة تسجيل مستخدم جديد -->
+  <url>
+    <loc>https://tabib-iq.com/signup</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- صفحة تسجيل طبيب جديد -->
+  <url>
+    <loc>https://tabib-iq.com/signup-doctor</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- صفحة تسجيل دخول الأدمن -->
+  <url>
+    <loc>https://tabib-iq.com/admin-login</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <!-- الصفحة الرئيسية للمستخدم -->
+  <url>
+    <loc>https://tabib-iq.com/home</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- لوحة تحكم الطبيب -->
+  <url>
+    <loc>https://tabib-iq.com/doctor-dashboard</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- لوحة تحكم الأدمن -->
+  <url>
+    <loc>https://tabib-iq.com/admin</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- المراكز الصحية -->
+  <url>
+    <loc>https://tabib-iq.com/health-centers</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- تذكيرات الأدوية -->
+  <url>
+    <loc>https://tabib-iq.com/medicine-reminder</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- مواعيدي -->
+  <url>
+    <loc>https://tabib-iq.com/my-appointments</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- مواعيد الطبيب -->
+  <url>
+    <loc>https://tabib-iq.com/doctor-appointments</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- الملف الشخصي للمستخدم -->
+  <url>
+    <loc>https://tabib-iq.com/profile</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <!-- الملف الشخصي للطبيب -->
+  <url>
+    <loc>https://tabib-iq.com/doctor-profile</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <!-- تقويم الطبيب -->
+  <url>
+    <loc>https://tabib-iq.com/doctor-calendar</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- تحليلات الطبيب -->
+  <url>
+    <loc>https://tabib-iq.com/doctor-analytics</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <!-- تسجيل دخول المركز -->
+  <url>
+    <loc>https://tabib-iq.com/center-login</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <!-- الصفحة الرئيسية للمركز -->
+  <url>
+    <loc>https://tabib-iq.com/center-home</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- صفحات اللغة -->
+  <url>
+    <loc>https://tabib-iq.com/ku</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://tabib-iq.com/" />
+    <xhtml:link rel="alternate" hreflang="ku" href="https://tabib-iq.com/ku" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabib-iq.com/en" />
+  </url>
+  
+  <url>
+    <loc>https://tabib-iq.com/en</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://tabib-iq.com/" />
+    <xhtml:link rel="alternate" hreflang="ku" href="https://tabib-iq.com/ku" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://tabib-iq.com/en" />
+  </url>
+  
+</urlset> 

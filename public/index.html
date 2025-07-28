@@ -1,43 +1,171 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Tabib IQ - منصة طبية شاملة لتسهيل التواصل بين المرضى والأطباء والمراكز الصحية"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
-
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>Tabib IQ - منصة طبيب</title>
+    <meta name="theme-color" content="#00bcd4" />
+    
+    <!-- SEO Meta Tags - تحسين محركات البحث -->
+    <title>Tabib IQ - منصة الأطباء العراقية الأولى | أطباء العراق | دكتور | طبيب</title>
+    <meta name="description" content="منصة Tabib IQ - أكبر منصة للأطباء في العراق. احجز موعد مع أفضل الأطباء، ابحث عن طبيب، دكتور، أطباء العراق. منصة صحية متكاملة تربط الناس بالأطباء المختصين." />
+    <meta name="keywords" content="طبيب, دكتور, أطباء العراق, منصة طبية, حجز موعد طبيب, أطباء بغداد, أطباء أربيل, أطباء الموصل, أطباء البصرة, طب عراقي, خدمات طبية, عيادة طبيب, استشارة طبية, طبيب مختص, طبيب عام, طبيب أسنان, طبيب قلب, طبيب عيون, طبيب أطفال, طبيب نسائية, طبيب باطنية, طبيب جراحة, طبيب تجميل, طبيب جلدية, طبيب نفسية, طبيب أعصاب, طبيب عظام, طبيب مسالك بولية, طبيب أنف وأذن وحنجرة, طبيب صدرية, طبيب هضمية, طبيب غدد صماء, طبيب روماتيزم, طبيب أورام, طبيب أشعة, طبيب مخ وأعصاب, طبيب مسالك بولية, طبيب تجميل, طبيب جلدية, طبيب نفسية, طبيب عيون, طبيب أسنان, طبيب قلب, طبيب أطفال, طبيب نسائية, طبيب باطنية, طبيب جراحة, طبيب عظام, طبيب أنف وأذن وحنجرة, طبيب صدرية, طبيب هضمية, طبيب غدد صماء, طبيب روماتيزم, طبيب أورام, طبيب أشعة, طبيب مخ وأعصاب" />
+    <meta name="author" content="Tabib IQ Team" />
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    
+    <!-- Open Graph Meta Tags - لمشاركة أفضل على وسائل التواصل -->
+    <meta property="og:title" content="Tabib IQ - منصة الأطباء العراقية الأولى" />
+    <meta property="og:description" content="احجز موعد مع أفضل الأطباء في العراق. منصة صحية متكاملة تربط الناس بالأطباء المختصين." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://tabib-iq.com" />
+    <meta property="og:image" content="%PUBLIC_URL%/og-image.jpg" />
+    <meta property="og:site_name" content="Tabib IQ" />
+    <meta property="og:locale" content="ar_IQ" />
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Tabib IQ - منصة الأطباء العراقية الأولى" />
+    <meta name="twitter:description" content="احجز موعد مع أفضل الأطباء في العراق. منصة صحية متكاملة تربط الناس بالأطباء المختصين." />
+    <meta name="twitter:image" content="%PUBLIC_URL%/twitter-image.jpg" />
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://tabib-iq.com" />
+    
+    <!-- Alternate Language Versions -->
+    <link rel="alternate" hreflang="ar" href="https://tabib-iq.com" />
+    <link rel="alternate" hreflang="ku" href="https://tabib-iq.com/ku" />
+    <link rel="alternate" hreflang="en" href="https://tabib-iq.com/en" />
+    <link rel="alternate" hreflang="x-default" href="https://tabib-iq.com" />
+    
+    <!-- Structured Data - Schema.org -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "MedicalOrganization",
+      "name": "Tabib IQ",
+      "alternateName": "منصة الأطباء العراقية",
+      "description": "منصة صحية متكاملة تربط الناس بالأطباء المختصين في العراق",
+      "url": "https://tabib-iq.com",
+      "logo": "https://tabib-iq.com/logo.png",
+      "image": "https://tabib-iq.com/og-image.jpg",
+      "sameAs": [
+        "https://www.facebook.com/tabibiq",
+        "https://twitter.com/tabibiq",
+        "https://instagram.com/tabibiq"
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "IQ",
+        "addressRegion": "Baghdad"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+964-776-901-2619",
+        "contactType": "customer service",
+        "availableLanguage": ["Arabic", "Kurdish", "English"]
+      },
+      "serviceType": "Medical Consultation",
+      "areaServed": {
+        "@type": "Country",
+        "name": "Iraq"
+      },
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Medical Services",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Online Doctor Consultation",
+              "description": "حجز موعد مع طبيب مختص"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Medical Appointment Booking",
+              "description": "حجز مواعيد طبية"
+            }
+          }
+        ]
+      }
+    }
+    </script>
+    
+    <!-- Additional SEO Meta Tags -->
+    <meta name="geo.region" content="IQ" />
+    <meta name="geo.placename" content="Iraq" />
+    <meta name="geo.position" content="33.3152;44.3661" />
+    <meta name="ICBM" content="33.3152, 44.3661" />
+    
+    <!-- Mobile App Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Tabib IQ" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    
+    <!-- Preconnect to external domains for better performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Favicon and App Icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="%PUBLIC_URL%/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="%PUBLIC_URL%/favicon-16x16.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/site.webmanifest" />
+    
+    <!-- Google Analytics and Search Console -->
+    <meta name="google-site-verification" content="YOUR_VERIFICATION_CODE" />
+    
+    <!-- Bing Webmaster Tools -->
+    <meta name="msvalidate.01" content="YOUR_BING_VERIFICATION_CODE" />
+    
+    <!-- Yandex Webmaster -->
+    <meta name="yandex-verification" content="YOUR_YANDEX_VERIFICATION_CODE" />
+    
+    <!-- Additional Performance Optimizations -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="//www.google-analytics.com" />
+    
+    <!-- Custom CSS for better loading -->
+    <style>
+      /* Loading animation */
+      .loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #00bcd4 0%, #009688 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
+      .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(255,255,255,0.3);
+        border-top: 5px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+    <div id="root">
+      <!-- Loading screen -->
+      <div class="loading-screen">
+        <div class="loading-spinner"></div>
+      </div>
+    </div>
   </body>
 </html>
