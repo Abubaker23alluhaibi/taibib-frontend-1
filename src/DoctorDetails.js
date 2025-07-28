@@ -110,10 +110,13 @@ useEffect(() => {
         const appointments = await res.json();
         const bookedTimeSlots = appointments.map(apt => apt.time);
         setBookedTimes(bookedTimeSlots);
-  
+      } else {
+        console.log('❌ خطأ في جلب المواعيد المحجوزة:', res.status);
+        setBookedTimes([]);
       }
     } catch (error) {
-      // Error fetching booked appointments
+      console.error('❌ خطأ في جلب المواعيد المحجوزة:', error);
+      setBookedTimes([]);
     }
   };
 
