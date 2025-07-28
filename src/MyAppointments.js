@@ -31,9 +31,12 @@ function MyAppointments() {
 
   const fetchMyAppointments = async () => {
     try {
+      console.log('🔍 جلب مواعيد المستخدم:', user._id);
       const res = await fetch(`${process.env.REACT_APP_API_URL}/user-appointments/${user._id}`);
+      
       if (res.ok) {
         const data = await res.json();
+        console.log('✅ تم جلب المواعيد:', data.length);
         
         // إزالة التكرار بشكل أكثر دقة
         const uniqueMap = new Map();
@@ -52,11 +55,11 @@ function MyAppointments() {
         });
         
         const uniqueAppointments = Array.from(uniqueMap.values());
-        
+        console.log('✅ المواعيد بعد إزالة التكرار:', uniqueAppointments.length);
         
         // إذا كان هناك تكرار، اعرض تنبيه للمستخدم
         if (data.length > uniqueAppointments.length) {
-    
+          console.log('⚠️ تم إزالة', data.length - uniqueAppointments.length, 'موعد مكرر');
         }
         
         // تنظيف إضافي للتأكد من عدم وجود تكرار
@@ -65,13 +68,17 @@ function MyAppointments() {
           return self.findIndex(a => `${a.doctorId}-${a.date}-${a.time}` === key) === index;
         });
         
-  
+        console.log('✅ المواعيد النهائية:', finalUniqueAppointments.length);
         setAppointments(finalUniqueAppointments);
       } else {
+        console.log('❌ خطأ في جلب المواعيد:', res.status);
         setError(t('fetch_appointments_fail'));
+        setAppointments([]);
       }
     } catch (err) {
+      console.error('❌ خطأ في جلب المواعيد:', err);
       setError(t('fetch_appointments_error'));
+      setAppointments([]);
     }
     setLoading(false);
   };
@@ -209,9 +216,20 @@ function MyAppointments() {
 
   // تنظيف إضافي للتأكد من عدم وجود تكرار في العرض
   const uniqueDisplayedAppointments = (() => {
-    const allToDisplay = showPastAppointments 
-      ? [...todayAppointments, ...upcomingAppointments, ...pastAppointments]
-      : [...todayAppointments, ...upcomingAppointments];
+    // إذا كان المستخدم يريد رؤية مواعيد اليوم فقط
+    if (!showPastAppointments) {
+      // عرض مواعيد اليوم فقط
+      const todayOnly = todayAppointments.filter(appointment => {
+        const key = `${appointment.doctorId}-${appointment.date}-${appointment.time}`;
+        return true; // عرض جميع مواعيد اليوم
+      });
+      
+      console.log('📅 مواعيد اليوم فقط:', todayOnly.length);
+      return sortAppointments(todayOnly);
+    }
+    
+    // إذا كان المستخدم يريد رؤية جميع المواعيد
+    const allToDisplay = [...todayAppointments, ...upcomingAppointments, ...pastAppointments];
     
     const uniqueMap = new Map();
     allToDisplay.forEach(appointment => {
