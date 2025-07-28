@@ -186,13 +186,13 @@ useEffect(() => {
     };
 
     const bookingData = {
-      userId: user._id,
+      patientId: user._id,
       doctorId: doctor._id,
-      userName: profile?.first_name || 'مستخدم',
-      doctorName: doctor.name,
       date: formatDate(selectedDate),
       time: selectedTime,
-      reason: reason || ''
+      type: 'consultation',
+      notes: reason || '',
+      symptoms: reason || ''
     };
     
     
