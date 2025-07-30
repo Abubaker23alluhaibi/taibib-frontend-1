@@ -113,6 +113,29 @@ function AdminDashboard() {
   }, [navigate]);
 
   const fetchData = async () => {
+    try {
+      console.log('📤 جلب بيانات لوحة التحكم...');
+      
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/dashboard`);
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
+        console.log('✅ تم جلب البيانات بنجاح:', data);
+        setUsers(data.users || []);
+        setDoctors(data.doctors || []);
+        setAppointments(data.appointments || []);
+        setAnalytics(data.stats || {});
+      } else {
+        console.error('❌ خطأ في جلب البيانات:', data.error);
+        setError(data.error || 'خطأ في جلب البيانات');
+      }
+    } catch (error) {
+      console.error('❌ خطأ في الاتصال:', error);
+      setError('خطأ في الاتصال بالخادم');
+    } finally {
+      setLoading(false);
+    }
+  };
     console.log('📡 جلب البيانات من الخادم...');
     setLoading(true);
     setError('');
