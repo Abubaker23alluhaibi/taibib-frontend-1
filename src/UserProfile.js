@@ -11,7 +11,7 @@ function UserProfile() {
   
   
   const [form, setForm] = useState({
-    first_name: '',
+    name: '',
     email: '',
     phone: '',
     profileImage: ''
@@ -48,7 +48,7 @@ function UserProfile() {
   useEffect(() => {
     if (profile) {
       setForm({
-        first_name: profile.first_name || '',
+        name: profile.name || profile.first_name || '',
         email: profile.email || '',
         phone: profile.phone || '',
         profileImage: profile.profileImage || profile.avatar || ''
@@ -57,7 +57,7 @@ function UserProfile() {
     } else if (user) {
       // إذا لم يكن هناك profile، استخدم user
       setForm({
-        first_name: user.first_name || '',
+        name: user.name || user.first_name || '',
         email: user.email || '',
         phone: user.phone || '',
         profileImage: user.profileImage || user.avatar || ''
@@ -110,7 +110,7 @@ function UserProfile() {
     setMsg('');
     setLoading(true);
     
-    if (!form.first_name || !form.email || !form.phone) {
+    if (!form.name || !form.email || !form.phone) {
       setError(t('fill_required_fields'));
       setLoading(false);
       return;
@@ -190,13 +190,19 @@ function UserProfile() {
     }
 
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/user-password/${profile?._id || user?._id}`, {
+      console.log('📤 تغيير كلمة المرور...');
+      
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/change-password/${profile?._id || user?._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: passwordForm.newPassword })
+        body: JSON.stringify({
+          currentPassword: passwordForm.currentPassword,
+          newPassword: passwordForm.newPassword
+        })
       });
 
       const data = await res.json();
+      console.log('📋 استجابة تغيير كلمة المرور:', data);
 
       if (res.ok) {
         setMsg('تم تغيير كلمة المرور بنجاح');
@@ -206,7 +212,8 @@ function UserProfile() {
         setError(data.error || t('error_changing_password'));
       }
     } catch (err) {
-              setError(t('error_changing_password'));
+      console.error('❌ خطأ في تغيير كلمة المرور:', err);
+      setError(t('error_changing_password'));
     } finally {
       setLoading(false);
     }
