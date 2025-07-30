@@ -37,19 +37,37 @@ function UserSignUp() {
       return;
     }
     try {
+      console.log('📤 إرسال بيانات التسجيل:', {
+        name: form.name,
+        email: form.email,
+        password: form.password,
+        phone: form.phone,
+        user_type: 'user'
+      });
+      
       const res = await fetch(process.env.REACT_APP_API_URL + '/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          name: form.name,
           email: form.email,
           password: form.password,
-          first_name: form.name,
-          phone: form.phone
+          phone: form.phone,
+          user_type: 'user'
         })
       });
+      
       const data = await res.json();
-              setSuccess(true);
+      
+      if (!res.ok) {
+        console.error('❌ خطأ في التسجيل:', data);
+        throw new Error(data.message || 'خطأ في التسجيل');
+      }
+      
+      console.log('✅ تم التسجيل بنجاح:', data);
+      setSuccess(true);
     } catch (err) {
+      console.error('❌ خطأ في التسجيل:', err);
       setError(err.message);
     }
   };
