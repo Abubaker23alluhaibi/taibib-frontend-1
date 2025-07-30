@@ -80,7 +80,7 @@ export const AuthProvider = ({ children }) => {
         process.env.REACT_APP_API_URL,
         'https://tabib-iq-backend-production.up.railway.app/api',
         'http://localhost:5000/api'
-      ];
+      ].filter(Boolean); // Remove empty URLs
       
       let res = null;
       let lastError = null;

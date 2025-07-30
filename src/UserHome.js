@@ -59,9 +59,10 @@ function UserHome() {
   };
 
   useEffect(() => {
-    console.log('🔄 جلب الأطباء من:', process.env.REACT_APP_API_URL + '/doctors');
+    const apiUrl = process.env.REACT_APP_API_URL || 'https://tabib-iq-backend-production.up.railway.app/api';
+    console.log('🔄 جلب الأطباء من:', apiUrl + '/doctors');
     
-   fetch(process.env.REACT_APP_API_URL + '/doctors')
+    fetch(apiUrl + '/doctors')
       .then(res => {
         console.log('📊 استجابة جلب الأطباء:', res.status);
         if (!res.ok) {
@@ -143,7 +144,8 @@ function UserHome() {
   // جلب إشعارات المستخدم
   useEffect(() => {
     if (!user?._id) return;
-    fetch(`${process.env.REACT_APP_API_URL}/notifications?userId=${user._id}`)
+    const apiUrl = process.env.REACT_APP_API_URL || 'https://tabib-iq-backend-production.up.railway.app/api';
+    fetch(`${apiUrl}/notifications?userId=${user._id}`)
       .then(res => {
         if (res.ok) {
           return res.json();
