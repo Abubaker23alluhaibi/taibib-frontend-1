@@ -74,17 +74,15 @@ function UserHome() {
         console.log('✅ تم جلب الأطباء:', data.length);
         // التأكد من أن البيانات مصفوفة
         const doctorsArray = Array.isArray(data) ? data : [];
-        // استبعاد الأطباء المعطلين
+        console.log('🔍 الأطباء المستلمون:', doctorsArray);
+        
+        // استبعاد الأطباء المعطلين فقط
         const enabledDoctors = doctorsArray.filter(doc => !doc.disabled);
-        // فصل الأطباء المميزين عن العاديين
-        const featuredDoctors = enabledDoctors.filter(doc => doc.is_featured && doc.status === 'approved');
-        const regularDoctors = enabledDoctors.filter(doc => !doc.is_featured && doc.status === 'approved');
-        // خلط الأطباء العاديين بشكل عشوائي
-        const shuffledRegularDoctors = regularDoctors.sort(() => Math.random() - 0.5);
-        // دمج الأطباء المميزين أولاً ثم العاديين
-        const sortedDoctors = [...featuredDoctors, ...shuffledRegularDoctors];
-        setSuggestedDoctors(sortedDoctors);
-        setDoctors(sortedDoctors);
+        console.log('✅ الأطباء النشطين:', enabledDoctors.length);
+        
+        // عرض جميع الأطباء النشطين (بدون فلترة إضافية)
+        setSuggestedDoctors(enabledDoctors);
+        setDoctors(enabledDoctors);
       })
       .catch(err => {
         console.error('❌ خطأ في جلب الأطباء:', err);
