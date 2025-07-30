@@ -6,6 +6,10 @@
   REACT_APP_API_URL = "https://tabib-iq-backend-production.up.railway.app/api"
   REACT_APP_ENV = "production"
 
+[context.production.environment]
+  REACT_APP_API_URL = "https://tabib-iq-backend-production.up.railway.app/api"
+  REACT_APP_ENV = "production"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
