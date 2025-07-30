@@ -32,15 +32,22 @@ function MyAppointments() {
   const fetchMyAppointments = async () => {
     try {
       console.log('🔍 جلب مواعيد المستخدم:', user._id);
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/user-appointments/${user._id}`);
+      
+      // استخدام الـ endpoint الصحيح
+      const apiUrl = process.env.REACT_APP_API_URL || 'https://api.tabib-iq.com/api';
+      const res = await fetch(`${apiUrl}/user-appointments/${user._id}`);
       
       if (res.ok) {
         const data = await res.json();
-        console.log('✅ تم جلب المواعيد:', data.length);
+        console.log('✅ تم جلب المواعيد:', data);
+        
+        // التأكد من أن البيانات تحتوي على appointments
+        const appointments = data.appointments || data || [];
+        console.log('✅ عدد المواعيد:', appointments.length);
         
         // إزالة التكرار بشكل أكثر دقة
         const uniqueMap = new Map();
-        data.forEach(appointment => {
+        appointments.forEach(appointment => {
           // استخدام مزيج من البيانات كـ key للتأكد من عدم التكرار
           const key = `${appointment.doctorId}-${appointment.date}-${appointment.time}`;
           if (!uniqueMap.has(key)) {
@@ -58,8 +65,8 @@ function MyAppointments() {
         console.log('✅ المواعيد بعد إزالة التكرار:', uniqueAppointments.length);
         
         // إذا كان هناك تكرار، اعرض تنبيه للمستخدم
-        if (data.length > uniqueAppointments.length) {
-          console.log('⚠️ تم إزالة', data.length - uniqueAppointments.length, 'موعد مكرر');
+        if (appointments.length > uniqueAppointments.length) {
+          console.log('⚠️ تم إزالة', appointments.length - uniqueAppointments.length, 'موعد مكرر');
         }
         
         // تنظيف إضافي للتأكد من عدم وجود تكرار
