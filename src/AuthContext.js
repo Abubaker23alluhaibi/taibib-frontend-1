@@ -134,6 +134,12 @@ export const AuthProvider = ({ children }) => {
         
         console.log('🔍 user_type النهائي:', userData.user_type);
         
+        // حفظ التوكن إذا كان موجوداً
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+          userData.token = data.token;
+        }
+        
         setUser(userData);
         setProfile(userData);
         
@@ -157,6 +163,7 @@ export const AuthProvider = ({ children }) => {
       // حذف البيانات من localStorage
       localStorage.removeItem('user');
       localStorage.removeItem('profile');
+      localStorage.removeItem('token');
       
       setUser(null);
       setProfile(null);

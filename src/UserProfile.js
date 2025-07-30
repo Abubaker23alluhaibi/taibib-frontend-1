@@ -24,7 +24,10 @@ function UserProfile() {
   // دالة مساعدة لمسار صورة المستخدم
   const getImageUrl = img => {
     if (!img) return null;
-    if (img.startsWith('/uploads/')) return process.env.REACT_APP_API_URL + img;
+    if (img.startsWith('/uploads/')) {
+      const apiUrl = process.env.REACT_APP_API_URL || 'https://api.tabib-iq.com/api';
+      return apiUrl.replace('/api', '') + img;
+    }
     if (img.startsWith('http')) return img;
     return null;
   };
@@ -119,7 +122,8 @@ function UserProfile() {
       // إذا كان هناك صورة جديدة، ارفعها أولاً
       if (selectedImage) {
         const formData = new FormData();
-        formData.append('image', selectedImage);
+        formData.append('profileImage', selectedImage);
+        formData.append('userId', profile?._id || user?._id);
         
         const uploadRes = await fetch(`${process.env.REACT_APP_API_URL}/upload-profile-image`, {
           method: 'POST',
@@ -128,7 +132,7 @@ function UserProfile() {
         
         if (uploadRes.ok) {
           const uploadData = await uploadRes.json();
-          updatedForm.profileImage = uploadData.imageUrl;
+          updatedForm.profileImage = uploadData.imagePath;
         } else {
           throw new Error(t('image_upload_error'));
         }

@@ -204,8 +204,8 @@ const DoctorCard = ({ doctor }) => {
           <span style={{fontSize: isMobile() ? 8 : 12, color: '#666', fontWeight: 500}}>{doctor.address || t('baghdad')}</span>
         </div>
         <div style={{display: 'flex', alignItems: 'center', gap: isMobile() ? 2 : 3}}>
-          <span style={{fontSize: isMobile() ? 8 : 14}} role="img" aria-label="experience">💼</span>
-          <span style={{fontSize: isMobile() ? 8 : 12, color: '#666', fontWeight: 500}}>{doctor.experience || t('experienced_doctor')}</span>
+          <span style={{fontSize: isMobile() ? 8 : 14}} role="img" aria-label="city">🏙️</span>
+          <span style={{fontSize: isMobile() ? 8 : 12, color: '#666', fontWeight: 500}}>{doctor.city || t('baghdad')}</span>
         </div>
       </div>
       

@@ -73,37 +73,47 @@ useEffect(() => {
       });
   }, [id]);
 
-  // استخراج الأيام المتاحة من workTimes
+  // استخراج الأيام المتاحة من workTimes أو availableDays
   const getAvailableDays = () => {
-    if (!doctor?.workTimes) return [];
-    return doctor.workTimes.map(wt => wt.day).filter(Boolean);
+    if (doctor?.availableDays) {
+      return doctor.availableDays.filter(day => day.available).map(day => day.day);
+    }
+    if (doctor?.workTimes) {
+      return doctor.workTimes.map(wt => wt.day).filter(Boolean);
+    }
+    return [];
   };
 
   // تقسيم الفترة الزمنية إلى مواعيد منفصلة كل 30 دقيقة
-  const generateTimeSlots = (from, to) => {
-    const slots = [];
-    
-    // التأكد من أن from و to هما strings
-    if (typeof from !== 'string' || typeof to !== 'string') {
-      
-      return [];
-    }
-    
-    try {
-      const start = new Date(`2000-01-01 ${from}`);
-      const end = new Date(`2000-01-01 ${to}`);
-      
-      while (start < end) {
-        const timeString = start.toTimeString().slice(0, 5);
-        slots.push(timeString);
-        start.setMinutes(start.getMinutes() + 30); // كل 30 دقيقة
+  const generateTimeSlots = (day) => {
+    if (doctor?.availableDays) {
+      const availableDay = doctor.availableDays.find(d => d.day === day);
+      if (availableDay && availableDay.times) {
+        return availableDay.times;
       }
-    } catch (error) {
-      
-      return [];
     }
     
-    return slots;
+    if (doctor?.workTimes) {
+      const workTime = doctor.workTimes.find(wt => wt.day === day);
+      if (workTime && workTime.from && workTime.to) {
+        const slots = [];
+        try {
+          const start = new Date(`2000-01-01 ${workTime.from}`);
+          const end = new Date(`2000-01-01 ${workTime.to}`);
+          
+          while (start < end) {
+            const timeString = start.toTimeString().slice(0, 5);
+            slots.push(timeString);
+            start.setMinutes(start.getMinutes() + 30); // كل 30 دقيقة
+          }
+        } catch (error) {
+          console.error('❌ خطأ في توليد الأوقات:', error);
+        }
+        return slots;
+      }
+    }
+    
+    return [];
   };
 
   // جلب المواعيد المحجوزة لطبيب معين في تاريخ محدد
@@ -162,7 +172,7 @@ useEffect(() => {
     else if (doctor?.workTimes && doctor.workTimes.length > 0) {
       const workTime = doctor.workTimes.find(wt => wt.day === dayName);
       if (workTime && workTime.from && workTime.to) {
-        availableTimesForDay = generateTimeSlots(workTime.from, workTime.to);
+        availableTimesForDay = generateTimeSlots(dayName);
       }
     }
     
