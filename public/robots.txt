@@ -4,7 +4,6 @@
 User-agent: *
 Allow: /
 
-# Sitemap
 Sitemap: https://tabib-iq.com/sitemap.xml
 
 # Crawl-delay for better server performance
