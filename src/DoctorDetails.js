@@ -139,7 +139,7 @@ useEffect(() => {
 
   // عند اختيار يوم بالتقويم، أظهر الأوقات المتاحة لذلك اليوم
   useEffect(() => {
-    if (!selectedDate || !doctor?.availableDays) {
+    if (!selectedDate || (!doctor?.availableDays && !doctor?.workTimes)) {
       setAvailableTimes([]);
       setBookedTimes([]);
       return;
@@ -149,15 +149,24 @@ useEffect(() => {
     const weekDays = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
     const dayName = weekDays[selectedDate.getDay()];
     
-    // البحث عن اليوم المتاح في availableDays
-    const availableDay = doctor.availableDays.find(ad => ad.day === dayName);
+    let availableTimesForDay = [];
     
-    if (availableDay && availableDay.available) {
-      setAvailableTimes(availableDay.times || []);
-    } else {
-      setAvailableTimes([]);
+    // أولاً: جرب availableDays (للأطباء الجدد)
+    if (doctor?.availableDays && doctor.availableDays.length > 0) {
+      const availableDay = doctor.availableDays.find(ad => ad.day === dayName);
+      if (availableDay && availableDay.available) {
+        availableTimesForDay = availableDay.times || [];
+      }
+    }
+    // ثانياً: إذا لم توجد availableDays، استخدم workTimes (للأطباء الحقيقيين)
+    else if (doctor?.workTimes && doctor.workTimes.length > 0) {
+      const workTime = doctor.workTimes.find(wt => wt.day === dayName);
+      if (workTime && workTime.from && workTime.to) {
+        availableTimesForDay = generateTimeSlots(workTime.from, workTime.to);
+      }
     }
     
+    setAvailableTimes(availableTimesForDay);
     setSelectedTime('');
     
     // جلب المواعيد المحجوزة لهذا اليوم
@@ -167,16 +176,24 @@ useEffect(() => {
 
   // تحديد الأيام المتاحة للتقويم
   const isDayAvailable = date => {
-    if (!doctor?.availableDays) return false;
+    if (!doctor?.availableDays && !doctor?.workTimes) return false;
     
     // ترتيب الأيام حسب جافاسكريبت: الأحد=0، الاثنين=1، ... السبت=6
     const weekDays = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
     const dayName = weekDays[date.getDay()];
     
-    // البحث عن اليوم في availableDays
-    const availableDay = doctor.availableDays.find(ad => ad.day === dayName);
-    return availableDay ? availableDay.available : false;
-
+    // أولاً: جرب availableDays (للأطباء الجدد)
+    if (doctor?.availableDays && doctor.availableDays.length > 0) {
+      const availableDay = doctor.availableDays.find(ad => ad.day === dayName);
+      return availableDay ? availableDay.available : false;
+    }
+    // ثانياً: إذا لم توجد availableDays، استخدم workTimes (للأطباء الحقيقيين)
+    else if (doctor?.workTimes && doctor.workTimes.length > 0) {
+      const workTime = doctor.workTimes.find(wt => wt.day === dayName);
+      return !!workTime;
+    }
+    
+    return false;
   };
 
   const handleBook = async (e) => {
