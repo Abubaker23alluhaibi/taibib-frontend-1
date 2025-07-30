@@ -172,6 +172,30 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const fetchUserProfile = async (userId) => {
+    try {
+      console.log('🔍 جلب بيانات المستخدم من قاعدة البيانات...');
+      
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/user/${userId}`);
+      const data = await res.json();
+      
+      if (res.ok && data.success) {
+        console.log('✅ تم جلب بيانات المستخدم:', data.user);
+        setUser(data.user);
+        setProfile(data.user);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        localStorage.setItem('profile', JSON.stringify(data.user));
+        return { data: data.user, error: null };
+      } else {
+        console.error('❌ خطأ في جلب بيانات المستخدم:', data.error);
+        return { data: null, error: data.error };
+      }
+    } catch (error) {
+      console.error('❌ خطأ في الاتصال:', error);
+      return { data: null, error: error.message };
+    }
+  };
+
   const updateProfile = async (updates) => {
     try {
       let url = '';
@@ -232,6 +256,7 @@ export const AuthProvider = ({ children }) => {
     signIn,
     signOut,
     updateProfile,
+    fetchUserProfile,
     logout: signOut,
     setUser,
   };

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 function UserProfile() {
-  const { profile, updateProfile, user } = useAuth();
+  const { profile, updateProfile, user, fetchUserProfile } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
   
@@ -44,9 +44,29 @@ function UserProfile() {
   // إضافة console.log للتأكد من حالة edit
   console.log('🔍 UserProfile - edit state:', edit);
 
+  // جلب البيانات من قاعدة البيانات عند تحميل الصفحة
+  useEffect(() => {
+    const loadUserData = async () => {
+      const currentUser = profile || user;
+      if (currentUser?._id) {
+        console.log('🔍 UserProfile - جلب البيانات من قاعدة البيانات...');
+        const { data, error } = await fetchUserProfile(currentUser._id);
+        if (error) {
+          console.error('❌ خطأ في جلب البيانات:', error);
+        }
+      }
+    };
+    
+    loadUserData();
+  }, []);
+
   // تحديث النموذج عند تغيير البيانات الشخصية
   useEffect(() => {
+    console.log('🔍 UserProfile useEffect - profile:', profile);
+    console.log('🔍 UserProfile useEffect - user:', user);
+    
     if (profile) {
+      console.log('🔍 UserProfile - استخدام profile data');
       setForm({
         name: profile.name || profile.first_name || '',
         email: profile.email || '',
@@ -55,6 +75,7 @@ function UserProfile() {
       });
       setImageLoadError(false);
     } else if (user) {
+      console.log('🔍 UserProfile - استخدام user data');
       // إذا لم يكن هناك profile، استخدم user
       setForm({
         name: user.name || user.first_name || '',
@@ -64,6 +85,12 @@ function UserProfile() {
       });
       setImageLoadError(false);
     }
+    
+    console.log('🔍 UserProfile - form state بعد التحديث:', {
+      name: profile?.name || user?.name || profile?.first_name || user?.first_name || '',
+      email: profile?.email || user?.email || '',
+      phone: profile?.phone || user?.phone || ''
+    });
   }, [profile, user]);
 
   const handleChange = e => {
