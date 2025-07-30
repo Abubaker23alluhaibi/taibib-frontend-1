@@ -74,13 +74,43 @@ export const AuthProvider = ({ children }) => {
   const signIn = async (email, password, loginType) => {
     try {
       console.log('🔍 تسجيل الدخول:', { email, loginType });
-      console.log('🔍 API URL:', process.env.REACT_APP_API_URL);
       
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, loginType })
-      });
+      // Fallback API URLs in case of SSL issues
+      const apiUrls = [
+        process.env.REACT_APP_API_URL,
+        'https://tabib-iq-backend-production.up.railway.app/api',
+        'http://localhost:5000/api'
+      ];
+      
+      let res = null;
+      let lastError = null;
+      
+      for (const apiUrl of apiUrls) {
+        if (!apiUrl) continue;
+        
+        try {
+          console.log('🔍 محاولة الاتصال بـ:', apiUrl);
+          
+          res = await fetch(`${apiUrl}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password, loginType })
+          });
+          
+          if (res.ok) {
+            console.log('✅ نجح الاتصال بـ:', apiUrl);
+            break;
+          }
+        } catch (error) {
+          console.log('❌ فشل الاتصال بـ:', apiUrl, error.message);
+          lastError = error;
+          continue;
+        }
+      }
+      
+      if (!res) {
+        throw new Error(`فشل الاتصال بالخادم. حاول مرة أخرى لاحقاً.`);
+      }
       
       console.log('🔍 استجابة تسجيل الدخول:', res.status);
       
