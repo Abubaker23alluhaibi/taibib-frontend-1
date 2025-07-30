@@ -183,10 +183,8 @@ const DoctorCard = ({ doctor }) => {
             fontSize: isMobile() ? 10 : 14, 
             marginBottom: isMobile() ? 2 : 3
           }}>
-            {/* التخصص العام (category) والتخصص الفرعي (specialty) */}
-            <span style={{fontWeight:700}}>{doctor.category}</span>
-            {doctor.category && doctor.specialty && <span style={{margin: '0 4px', color:'#888'}}>|</span>}
-            <span>{specialties[doctor.specialty] || doctor.specialty}</span>
+            {/* التخصص */}
+            <span>{doctor.specialty || t('general_medicine')}</span>
           </div>
         </div>
       </div>
@@ -202,12 +200,12 @@ const DoctorCard = ({ doctor }) => {
         border: '1px solid rgba(0, 188, 212, 0.1)'
       }}>
         <div style={{display: 'flex', alignItems: 'center', gap: isMobile() ? 2 : 3}}>
-          <span style={{fontSize: isMobile() ? 8 : 14}} role="img" aria-label="governorate">🏛️</span>
-          <span style={{fontSize: isMobile() ? 8 : 12, color: '#666', fontWeight: 500}}>{provinces[doctor.province] || doctor.province}</span>
+          <span style={{fontSize: isMobile() ? 8 : 14}} role="img" aria-label="address">📍</span>
+          <span style={{fontSize: isMobile() ? 8 : 12, color: '#666', fontWeight: 500}}>{doctor.address || t('baghdad')}</span>
         </div>
         <div style={{display: 'flex', alignItems: 'center', gap: isMobile() ? 2 : 3}}>
-          <span style={{fontSize: isMobile() ? 8 : 14}} role="img" aria-label="area">📍</span>
-          <span style={{fontSize: isMobile() ? 8 : 12, color: '#666', fontWeight: 500}}>{doctor.area}</span>
+          <span style={{fontSize: isMobile() ? 8 : 14}} role="img" aria-label="experience">💼</span>
+          <span style={{fontSize: isMobile() ? 8 : 12, color: '#666', fontWeight: 500}}>{doctor.experience || t('experienced_doctor')}</span>
         </div>
       </div>
       
