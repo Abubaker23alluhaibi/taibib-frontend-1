@@ -56,11 +56,15 @@ useEffect(() => {
 }, [user, profile]);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/doctors`)
+    setLoading(true);
+    fetch(`${process.env.REACT_APP_API_URL}/doctors/${id}`)
       .then(res => res.json())
       .then(data => {
-        const found = data.find(d => d._id === id);
-        setDoctor(found);
+        if (data.success && data.doctor) {
+          setDoctor(data.doctor);
+        } else {
+          setError(t('error_fetching_doctor_data'));
+        }
         setLoading(false);
       })
       .catch(err => {
@@ -377,13 +381,27 @@ useEffect(() => {
           <div style={{fontWeight:900, fontSize:26, color:'#222'}}>{doctor.name}</div>
           <div style={{color:'#7c4dff', fontWeight:700, fontSize:18}}>{specialties[doctor.specialty] || doctor.specialty}</div>
           <div style={{fontSize:16, color:'#888'}}>
-            <span role="img" aria-label="governorate">🏛️</span> {provinces[doctor.province] || doctor.province} &nbsp;
-            <span role="img" aria-label="area">📍</span> {doctor.area}
+            <span role="img" aria-label="city">🏙️</span> {doctor.city || t('baghdad')} &nbsp;
+            <span role="img" aria-label="address">📍</span> {doctor.address}
           </div>
-          {doctor.clinicLocation && <div style={{color:'#444', fontSize:15, marginTop:6}}><b>{t('clinic_location_label')}:</b> {doctor.clinicLocation}</div>}
           {doctor.phone && <div style={{color:'#444', fontSize:15, marginTop:6}}><b>{t('phone_label')}:</b> {doctor.phone}</div>}
+          {doctor.email && <div style={{color:'#444', fontSize:15, marginTop:6}}><b>{t('email')}:</b> {doctor.email}</div>}
+          {doctor.education && <div style={{color:'#444', fontSize:15, marginTop:6}}><b>{t('education_label') || 'التعليم'}:</b> {doctor.education}</div>}
           {doctor.about && <div style={{color:'#333', fontSize:16, marginTop:18, textAlign:'center', lineHeight:1.8, background:'#f7fafd', borderRadius:10, padding:'1rem 0.7rem'}}><b>{t('about_doctor_label')}:</b><br/>{doctor.about}</div>}
         </div>
+        {/* الأيام المتاحة للحجز */}
+        {doctor.availableDays && (
+          <div style={{marginTop:18, marginBottom:10, background:'#f7fafd', borderRadius:10, padding:'1rem 0.7rem'}}>
+            <b>الأيام المتاحة للحجز:</b>
+            <ul style={{margin:'8px 0 0 0', padding:0, listStyle:'none', display:'flex', flexWrap:'wrap', gap:10}}>
+              {doctor.availableDays.map((d, idx) => (
+                <li key={idx} style={{background:d.available?'#00bcd4':'#eee', color:d.available?'#fff':'#888', borderRadius:6, padding:'0.3rem 0.8rem', fontWeight:700, fontSize:15}}>
+                  {d.day} {d.available ? `(${d.times.join(', ')})` : '(غير متاح)'}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         {/* الأوقات المتاحة */}
         <div style={{marginTop:30}}>
           <div style={{fontWeight:700, fontSize:18, color:'#7c4dff', marginBottom:10}}>{t('choose_booking_day')}</div>
