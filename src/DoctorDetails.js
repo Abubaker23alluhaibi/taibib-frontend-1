@@ -139,29 +139,25 @@ useEffect(() => {
 
   // عند اختيار يوم بالتقويم، أظهر الأوقات المتاحة لذلك اليوم
   useEffect(() => {
-    if (!selectedDate || !doctor?.workTimes) {
+    if (!selectedDate || !doctor?.availableDays) {
       setAvailableTimes([]);
       setBookedTimes([]);
       return;
     }
+    
     // ترتيب الأيام حسب جافاسكريبت: الأحد=0، الاثنين=1، ... السبت=6
     const weekDays = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
     const dayName = weekDays[selectedDate.getDay()];
-    const times = doctor.workTimes.filter(wt => wt.day === dayName);
     
+    // البحث عن اليوم المتاح في availableDays
+    const availableDay = doctor.availableDays.find(ad => ad.day === dayName);
     
+    if (availableDay && availableDay.available) {
+      setAvailableTimes(availableDay.times || []);
+    } else {
+      setAvailableTimes([]);
+    }
     
-    // تقسيم كل فترة زمنية إلى مواعيد منفصلة
-    const allSlots = [];
-    times.forEach(wt => {
-      if (wt.from && wt.to) {
-        const slots = generateTimeSlots(wt.from, wt.to);
-        allSlots.push(...slots);
-      }
-    });
-    
-    
-    setAvailableTimes(allSlots);
     setSelectedTime('');
     
     // جلب المواعيد المحجوزة لهذا اليوم
@@ -171,10 +167,16 @@ useEffect(() => {
 
   // تحديد الأيام المتاحة للتقويم
   const isDayAvailable = date => {
+    if (!doctor?.availableDays) return false;
+    
     // ترتيب الأيام حسب جافاسكريبت: الأحد=0، الاثنين=1، ... السبت=6
     const weekDays = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
     const dayName = weekDays[date.getDay()];
-    return getAvailableDays().includes(dayName);
+    
+    // البحث عن اليوم في availableDays
+    const availableDay = doctor.availableDays.find(ad => ad.day === dayName);
+    return availableDay ? availableDay.available : false;
+
   };
 
   const handleBook = async (e) => {
