@@ -1,0 +1,5 @@
+[33m32d153c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Fix AuthContext to use only api.tabib-iq.com and add debug logs
+[33m2e799be[m Fix API service to use only api.tabib-iq.com and remove fallback URLs
+[33m8cd1e07[m إضافة دوال حذف المستخدمين والأطباء في apiService
+[33m106e6c4[m إزالة الخوادم القديمة من apiService و AuthContext - التركيز على api.tabib-iq.com فقط
+[33m8ed9923[m إصلاح AdminDashboard.js ليستخدم apiService بدلا من fetch المباشر
