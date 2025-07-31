@@ -3,6 +3,7 @@ import { useAuth } from './AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import i18n from './i18n';
+import apiService from './services/apiService';
 
 function MyAppointments() {
   const { user, profile } = useAuth();
@@ -33,55 +34,45 @@ function MyAppointments() {
     try {
       console.log('🔍 جلب مواعيد المستخدم:', user._id);
       
-      // استخدام الـ endpoint الصحيح
-      const apiUrl = process.env.REACT_APP_API_URL || 'https://api.tabib-iq.com/api';
-      const res = await fetch(`${apiUrl}/user-appointments/${user._id}`);
+      const appointmentsData = await apiService.getUserAppointments(user._id);
+      console.log('✅ تم جلب المواعيد:', appointmentsData);
       
-      if (res.ok) {
-        const data = await res.json();
-        console.log('✅ تم جلب المواعيد:', data);
-        
-        // التأكد من أن البيانات تحتوي على appointments
-        const appointments = data.appointments || data || [];
-        console.log('✅ عدد المواعيد:', appointments.length);
-        
-        // إزالة التكرار بشكل أكثر دقة
-        const uniqueMap = new Map();
-        appointments.forEach(appointment => {
-          // استخدام مزيج من البيانات كـ key للتأكد من عدم التكرار
-          const key = `${appointment.doctorId}-${appointment.date}-${appointment.time}`;
-          if (!uniqueMap.has(key)) {
+      // التأكد من أن البيانات تحتوي على appointments
+      const appointments = appointmentsData.appointments || appointmentsData || [];
+      console.log('✅ عدد المواعيد:', appointments.length);
+      
+      // إزالة التكرار بشكل أكثر دقة
+      const uniqueMap = new Map();
+      appointments.forEach(appointment => {
+        // استخدام مزيج من البيانات كـ key للتأكد من عدم التكرار
+        const key = `${appointment.doctorId}-${appointment.date}-${appointment.time}`;
+        if (!uniqueMap.has(key)) {
+          uniqueMap.set(key, appointment);
+        } else {
+          // إذا كان هناك تكرار، احتفظ بالأحدث
+          const existing = uniqueMap.get(key);
+          if (new Date(appointment.createdAt) > new Date(existing.createdAt)) {
             uniqueMap.set(key, appointment);
-          } else {
-            // إذا كان هناك تكرار، احتفظ بالأحدث
-            const existing = uniqueMap.get(key);
-            if (new Date(appointment.createdAt) > new Date(existing.createdAt)) {
-              uniqueMap.set(key, appointment);
-            }
           }
-        });
-        
-        const uniqueAppointments = Array.from(uniqueMap.values());
-        console.log('✅ المواعيد بعد إزالة التكرار:', uniqueAppointments.length);
-        
-        // إذا كان هناك تكرار، اعرض تنبيه للمستخدم
-        if (appointments.length > uniqueAppointments.length) {
-          console.log('⚠️ تم إزالة', appointments.length - uniqueAppointments.length, 'موعد مكرر');
         }
-        
-        // تنظيف إضافي للتأكد من عدم وجود تكرار
-        const finalUniqueAppointments = uniqueAppointments.filter((appointment, index, self) => {
-          const key = `${appointment.doctorId}-${appointment.date}-${appointment.time}`;
-          return self.findIndex(a => `${a.doctorId}-${a.date}-${a.time}` === key) === index;
-        });
-        
-        console.log('✅ المواعيد النهائية:', finalUniqueAppointments.length);
-        setAppointments(finalUniqueAppointments);
-      } else {
-        console.log('❌ خطأ في جلب المواعيد:', res.status);
-        setError(t('fetch_appointments_fail'));
-        setAppointments([]);
+      });
+      
+      const uniqueAppointments = Array.from(uniqueMap.values());
+      console.log('✅ المواعيد بعد إزالة التكرار:', uniqueAppointments.length);
+      
+      // إذا كان هناك تكرار، اعرض تنبيه للمستخدم
+      if (appointments.length > uniqueAppointments.length) {
+        console.log('⚠️ تم إزالة', appointments.length - uniqueAppointments.length, 'موعد مكرر');
       }
+      
+      // تنظيف إضافي للتأكد من عدم وجود تكرار
+      const finalUniqueAppointments = uniqueAppointments.filter((appointment, index, self) => {
+        const key = `${appointment.doctorId}-${appointment.date}-${appointment.time}`;
+        return self.findIndex(a => `${a.doctorId}-${a.date}-${a.time}` === key) === index;
+      });
+      
+      console.log('✅ المواعيد النهائية:', finalUniqueAppointments.length);
+      setAppointments(finalUniqueAppointments);
     } catch (err) {
       console.error('❌ خطأ في جلب المواعيد:', err);
       setError(t('fetch_appointments_error'));
@@ -92,16 +83,11 @@ function MyAppointments() {
 
   const cancelAppointment = async (appointmentId) => {
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/appointments/${appointmentId}`, {
-        method: 'DELETE'
-      });
-      if (res.ok) {
-        setAppointments(appointments.filter(apt => apt._id !== appointmentId));
-        alert(t('appointment_cancelled_success'));
-      } else {
-        alert(t('appointment_cancelled_fail'));
-      }
+      await apiService.deleteAppointment(appointmentId);
+      setAppointments(appointments.filter(apt => apt._id !== appointmentId));
+      alert(t('appointment_cancelled_success'));
     } catch (err) {
+      console.error('❌ خطأ في إلغاء الموعد:', err);
       alert(t('appointment_cancelled_error'));
     }
     setShowConfirm(false);

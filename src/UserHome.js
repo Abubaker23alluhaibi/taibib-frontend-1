@@ -5,6 +5,7 @@ import { useAuth } from './AuthContext';
 import DoctorCard from './DoctorCard';
 import './Login.css';
 import { useTranslation } from 'react-i18next';
+import apiService from './services/apiService';
 
 function UserHome() {
   const navigate = useNavigate();
@@ -59,36 +60,29 @@ function UserHome() {
   };
 
   useEffect(() => {
-    const apiUrl = process.env.REACT_APP_API_URL || 'https://api.tabib-iq.com/api';
-    console.log('🔄 جلب الأطباء من:', apiUrl + '/doctors');
-    
-    fetch(apiUrl + '/doctors')
-      .then(res => {
-        console.log('📊 استجابة جلب الأطباء:', res.status);
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        return res.json();
-      })
-      .then(data => {
-        console.log('✅ تم جلب الأطباء:', data.length);
-        // التأكد من أن البيانات مصفوفة
-        const doctorsArray = Array.isArray(data) ? data : [];
-        console.log('🔍 الأطباء المستلمون:', doctorsArray);
+    const loadDoctors = async () => {
+      try {
+        console.log('🔄 جلب الأطباء من الخادم...');
+        const doctorsData = await apiService.getDoctors();
+        
+        console.log('✅ تم جلب الأطباء:', doctorsData.length);
+        console.log('🔍 الأطباء المستلمون:', doctorsData);
         
         // استبعاد الأطباء المعطلين فقط
-        const enabledDoctors = doctorsArray.filter(doc => !doc.disabled);
+        const enabledDoctors = doctorsData.filter(doc => !doc.disabled);
         console.log('✅ الأطباء النشطين:', enabledDoctors.length);
         
-        // عرض جميع الأطباء النشطين (بدون فلترة إضافية)
+        // عرض جميع الأطباء النشطين
         setSuggestedDoctors(enabledDoctors);
         setDoctors(enabledDoctors);
-      })
-      .catch(err => {
-        console.error('❌ خطأ في جلب الأطباء:', err);
+      } catch (error) {
+        console.error('❌ خطأ في جلب الأطباء:', error);
         setSuggestedDoctors([]);
         setDoctors([]);
-      });
+      }
+    };
+
+    loadDoctors();
   }, []);
 
   // عدل منطق الفلترة ليأخذ بالحسبان التخصص العام والفرعي
