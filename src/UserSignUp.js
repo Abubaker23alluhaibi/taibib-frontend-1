@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from './AuthContext';
 import './Login.css';
 
 function UserSignUp() {
@@ -13,6 +14,7 @@ function UserSignUp() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
+  const { signUp } = useAuth();
 
   useEffect(() => {
 
@@ -45,23 +47,15 @@ function UserSignUp() {
         user_type: 'user'
       });
       
-      const res = await fetch(process.env.REACT_APP_API_URL + '/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          password: form.password,
-          phone: form.phone,
-          user_type: 'user'
-        })
+      const { data, error } = await signUp(form.email, form.password, {
+        name: form.name,
+        phone: form.phone,
+        user_type: 'user'
       });
       
-      const data = await res.json();
-      
-      if (!res.ok) {
-        console.error('❌ خطأ في التسجيل:', data);
-        throw new Error(data.message || 'خطأ في التسجيل');
+      if (error) {
+        console.error('❌ خطأ في التسجيل:', error);
+        throw new Error(error);
       }
       
       console.log('✅ تم التسجيل بنجاح:', data);

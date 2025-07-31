@@ -53,20 +53,61 @@ export const AuthProvider = ({ children }) => {
 
   const signUp = async (email, password, userData) => {
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, ...userData })
-      });
+      console.log('🔍 إنشاء حساب جديد:', { email, user_type: userData.user_type });
+      
+      // Fallback API URLs in case of SSL issues
+      const apiUrls = [
+        process.env.REACT_APP_API_URL,
+        'https://api.tabib-iq.com'
+      ].filter(Boolean); // Remove empty URLs
+      
+      let res = null;
+      let lastError = null;
+      
+      for (const apiUrl of apiUrls) {
+        if (!apiUrl) continue;
+        
+        try {
+          console.log('🔍 محاولة الاتصال بـ:', apiUrl);
+          
+          // إصلاح مشكلة double /api
+          const registerUrl = apiUrl.endsWith('/api') ? `${apiUrl}/auth/register` : `${apiUrl}/api/auth/register`;
+          res = await fetch(registerUrl, {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({ email, password, ...userData }),
+            mode: 'cors'
+          });
+          
+          if (res.ok) {
+            console.log('✅ نجح الاتصال بـ:', apiUrl);
+            break;
+          }
+        } catch (error) {
+          console.log('❌ فشل الاتصال بـ:', apiUrl, error.message);
+          lastError = error;
+          continue;
+        }
+      }
+      
+      if (!res) {
+        throw new Error(`فشل الاتصال بالخادم. حاول مرة أخرى لاحقاً.`);
+      }
       
       const data = await res.json();
 
       if (res.ok) {
+        console.log('✅ تم إنشاء الحساب بنجاح');
         return { data, error: null };
       } else {
+        console.log('❌ خطأ في إنشاء الحساب:', data.error);
         return { data: null, error: data.error };
       }
     } catch (error) {
+      console.error('❌ خطأ في الاتصال:', error);
       return { data: null, error: error.message };
     }
   };

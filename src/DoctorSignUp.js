@@ -264,10 +264,45 @@ function DoctorSignUp() {
     
     try {
       console.log('📤 إرسال بيانات الطبيب مع الوثائق...');
-      const res = await fetch(process.env.REACT_APP_API_URL + '/doctors', {
-        method: 'POST',
-        body: formData
-      });
+      
+      // Fallback API URLs in case of SSL issues
+      const apiUrls = [
+        process.env.REACT_APP_API_URL,
+        'https://api.tabib-iq.com'
+      ].filter(Boolean); // Remove empty URLs
+      
+      let res = null;
+      let lastError = null;
+      
+      for (const apiUrl of apiUrls) {
+        if (!apiUrl) continue;
+        
+        try {
+          console.log('🔍 محاولة الاتصال بـ:', apiUrl);
+          
+          // إصلاح مشكلة double /api
+          const doctorsUrl = apiUrl.endsWith('/api') ? `${apiUrl}/doctors` : `${apiUrl}/api/doctors`;
+          res = await fetch(doctorsUrl, {
+            method: 'POST',
+            body: formData,
+            mode: 'cors'
+          });
+          
+          if (res.ok) {
+            console.log('✅ نجح الاتصال بـ:', apiUrl);
+            break;
+          }
+        } catch (error) {
+          console.log('❌ فشل الاتصال بـ:', apiUrl, error.message);
+          lastError = error;
+          continue;
+        }
+      }
+      
+      if (!res) {
+        throw new Error(`فشل الاتصال بالخادم. حاول مرة أخرى لاحقاً.`);
+      }
+      
       const data = await res.json();
       
       if (!res.ok) {
