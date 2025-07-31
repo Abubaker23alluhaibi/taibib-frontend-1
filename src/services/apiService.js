@@ -58,7 +58,8 @@ class ApiService {
   async getDoctorById(doctorId) {
     try {
       const result = await this.makeRequest(`/doctors/${doctorId}`);
-      return result.data;
+      console.log('🔍 apiService.getDoctorById - result:', result);
+      return result.data.doctor || result.data;
     } catch (error) {
       console.error('❌ خطأ في جلب بيانات الطبيب:', error);
       return null;

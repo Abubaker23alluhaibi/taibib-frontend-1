@@ -65,6 +65,12 @@ useEffect(() => {
         if (doctorData) {
           setDoctor(doctorData);
           console.log('✅ تم جلب بيانات الطبيب بنجاح:', doctorData);
+          console.log('🔍 بيانات الأيام المتاحة:', {
+            availableDays: doctorData.availableDays,
+            workTimes: doctorData.workTimes,
+            hasAvailableDays: !!doctorData.availableDays,
+            hasWorkTimes: !!doctorData.workTimes
+          });
         } else {
           setError(t('error_fetching_doctor_data'));
         }
@@ -185,23 +191,33 @@ useEffect(() => {
 
   // تحديد الأيام المتاحة للتقويم
   const isDayAvailable = date => {
-    if (!doctor?.availableDays && !doctor?.workTimes) return false;
+    if (!doctor?.availableDays && !doctor?.workTimes) {
+      console.log('❌ لا توجد بيانات أيام متاحة للطبيب');
+      return false;
+    }
     
     // ترتيب الأيام حسب جافاسكريبت: الأحد=0، الاثنين=1، ... السبت=6
     const weekDays = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
     const dayName = weekDays[date.getDay()];
     
+    console.log('🔍 فحص اليوم:', dayName, 'للطبيب:', doctor?.name);
+    
     // أولاً: جرب availableDays (للأطباء الجدد)
     if (doctor?.availableDays && doctor.availableDays.length > 0) {
       const availableDay = doctor.availableDays.find(ad => ad.day === dayName);
-      return availableDay ? availableDay.available : false;
+      const isAvailable = availableDay ? availableDay.available : false;
+      console.log('🔍 availableDays - اليوم:', dayName, 'متاح:', isAvailable, 'البيانات:', availableDay);
+      return isAvailable;
     }
     // ثانياً: إذا لم توجد availableDays، استخدم workTimes (للأطباء الحقيقيين)
     else if (doctor?.workTimes && doctor.workTimes.length > 0) {
       const workTime = doctor.workTimes.find(wt => wt.day === dayName);
-      return !!workTime;
+      const isAvailable = !!workTime;
+      console.log('🔍 workTimes - اليوم:', dayName, 'متاح:', isAvailable, 'البيانات:', workTime);
+      return isAvailable;
     }
     
+    console.log('❌ لا توجد بيانات لهذا اليوم:', dayName);
     return false;
   };
 
@@ -433,6 +449,23 @@ useEffect(() => {
         {/* الأوقات المتاحة */}
         <div style={{marginTop:30}}>
           <div style={{fontWeight:700, fontSize:18, color:'#7c4dff', marginBottom:10}}>{t('choose_booking_day')}</div>
+          
+          {/* رسالة تحذير إذا لم تكن هناك أيام متاحة */}
+          {(!doctor.availableDays || doctor.availableDays.every(day => !day.available)) && 
+           (!doctor.workTimes || doctor.workTimes.length === 0) && (
+            <div style={{
+              background: '#fff3cd',
+              border: '1px solid #ffeaa7',
+              borderRadius: 10,
+              padding: '1rem',
+              marginBottom: 15,
+              textAlign: 'center',
+              color: '#856404'
+            }}>
+              <div style={{fontWeight: 700, marginBottom: 5}}>⚠️ تنبيه</div>
+              <div>لم يتم إعداد أوقات العمل لهذا الطبيب بعد. يرجى التواصل مع الطبيب مباشرة أو المحاولة لاحقاً.</div>
+            </div>
+          )}
           {/* شريط أيام الأسبوع بالكردية */}
           <div style={{display:'flex', justifyContent:'space-between', margin:'0 0 6px 0', fontWeight:700, color:'#7c4dff', fontSize:15}}>
             {weekdays.map(day => (
