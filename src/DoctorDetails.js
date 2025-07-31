@@ -8,6 +8,7 @@ import { ar } from 'date-fns/locale';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import { useTranslation } from 'react-i18next';
+import apiService from './services/apiService';
 
 function DoctorDetails() {
   const { id } = useParams();
@@ -56,22 +57,27 @@ useEffect(() => {
 }, [user, profile]);
 
   useEffect(() => {
-    setLoading(true);
-    fetch(`${process.env.REACT_APP_API_URL}/doctors/${id}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.success && data.doctor) {
-          setDoctor(data.doctor);
+    const fetchDoctor = async () => {
+      setLoading(true);
+      try {
+        console.log('🔍 جلب بيانات الطبيب:', id);
+        const doctorData = await apiService.getDoctorById(id);
+        if (doctorData) {
+          setDoctor(doctorData);
+          console.log('✅ تم جلب بيانات الطبيب بنجاح:', doctorData);
         } else {
           setError(t('error_fetching_doctor_data'));
         }
-        setLoading(false);
-      })
-      .catch(err => {
+      } catch (err) {
+        console.error('❌ خطأ في جلب بيانات الطبيب:', err);
         setError(t('error_fetching_doctor_data'));
+      } finally {
         setLoading(false);
-      });
-  }, [id]);
+      }
+    };
+    
+    fetchDoctor();
+  }, [id, t]);
 
   // استخراج الأيام المتاحة من workTimes أو availableDays
   const getAvailableDays = () => {
@@ -129,18 +135,11 @@ useEffect(() => {
         return;
       }
       
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/appointments/${doctorId}/${date}?patientId=${userId}`);
-      if (res.ok) {
-        const appointments = await res.json();
-        const bookedTimeSlots = appointments.map(apt => apt.time);
-        setBookedTimes(bookedTimeSlots);
-      } else if (res.status === 401) {
-        console.log('❌ يجب تسجيل الدخول أولاً');
-        setBookedTimes([]);
-      } else {
-        console.log('❌ خطأ في جلب المواعيد المحجوزة:', res.status);
-        setBookedTimes([]);
-      }
+      console.log('🔍 جلب المواعيد المحجوزة للطبيب:', doctorId, 'في التاريخ:', date);
+      const timeSlots = await apiService.getAvailableTimeSlots(doctorId, date);
+      const bookedTimeSlots = timeSlots.filter(slot => !slot.available).map(slot => slot.time);
+      setBookedTimes(bookedTimeSlots);
+      console.log('✅ تم جلب المواعيد المحجوزة:', bookedTimeSlots);
     } catch (error) {
       console.error('❌ خطأ في جلب المواعيد المحجوزة:', error);
       setBookedTimes([]);
