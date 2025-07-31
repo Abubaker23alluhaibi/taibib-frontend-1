@@ -373,6 +373,34 @@ class ApiService {
       throw error;
     }
   }
+
+  // Delete user
+  async deleteUser(userId) {
+    try {
+      const result = await this.makeRequest(`/users/${userId}`, {
+        method: 'DELETE'
+      });
+      console.log('✅ تم حذف المستخدم بنجاح');
+      return result.data;
+    } catch (error) {
+      console.error('❌ خطأ في حذف المستخدم:', error);
+      throw error;
+    }
+  }
+
+  // Delete doctor
+  async deleteDoctor(doctorId) {
+    try {
+      const result = await this.makeRequest(`/doctors/${doctorId}`, {
+        method: 'DELETE'
+      });
+      console.log('✅ تم حذف الطبيب بنجاح');
+      return result.data;
+    } catch (error) {
+      console.error('❌ خطأ في حذف الطبيب:', error);
+      throw error;
+    }
+  }
 }
 
 const apiService = new ApiService();
