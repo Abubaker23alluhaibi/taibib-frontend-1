@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import apiService from './services/apiService';
 
 function UserProfile() {
   const { profile, updateProfile, user, fetchUserProfile } = useAuth();
