@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
 import { useTranslation } from 'react-i18next';
+import { apiFormDataRequest } from './utils/apiHelper';
 
 const provinces = [
   'بغداد', 'البصرة', 'نينوى', 'أربيل', 'النجف', 'كركوك', 'السليمانية', 'دهوك', 'ذي قار', 'صلاح الدين', 'الأنبار', 'واسط', 'ميسان', 'بابل', 'القادسية', 'ديالى', 'المثنى', 'كربلاء', 'حلبجة'
@@ -265,52 +266,9 @@ function DoctorSignUp() {
     try {
       console.log('📤 إرسال بيانات الطبيب مع الوثائق...');
       
-      // Fallback API URLs in case of SSL issues
-      const apiUrls = [
-        process.env.REACT_APP_API_URL,
-        'https://api.tabib-iq.com'
-      ].filter(Boolean); // Remove empty URLs
+      const result = await apiFormDataRequest('/doctors', formData);
       
-      let res = null;
-      let lastError = null;
-      
-      for (const apiUrl of apiUrls) {
-        if (!apiUrl) continue;
-        
-        try {
-          console.log('🔍 محاولة الاتصال بـ:', apiUrl);
-          
-          // إصلاح مشكلة double /api
-          const doctorsUrl = apiUrl.endsWith('/api') ? `${apiUrl}/doctors` : `${apiUrl}/api/doctors`;
-          res = await fetch(doctorsUrl, {
-            method: 'POST',
-            body: formData,
-            mode: 'cors'
-          });
-          
-          if (res.ok) {
-            console.log('✅ نجح الاتصال بـ:', apiUrl);
-            break;
-          }
-        } catch (error) {
-          console.log('❌ فشل الاتصال بـ:', apiUrl, error.message);
-          lastError = error;
-          continue;
-        }
-      }
-      
-      if (!res) {
-        throw new Error(`فشل الاتصال بالخادم. حاول مرة أخرى لاحقاً.`);
-      }
-      
-      const data = await res.json();
-      
-      if (!res.ok) {
-        console.error('❌ خطأ في تسجيل الطبيب:', data);
-        throw new Error(data.error || t('error_occurred'));
-      }
-      
-      console.log('✅ تم تسجيل الطبيب بنجاح:', data);
+      console.log('✅ تم تسجيل الطبيب بنجاح:', result.data);
       setSuccess(true);
     } catch (err) {
       console.error('❌ خطأ في تسجيل الطبيب:', err);

@@ -5,7 +5,8 @@ class ApiService {
   constructor() {
     this.baseURL = API_BASE_URL;
     this.fallbackURLs = [
-      'https://api.tabib-iq.com'
+      'https://api.tabib-iq.com',
+      'https://tabib-iq-backend-production.up.railway.app'
     ];
   }
 
@@ -13,9 +14,17 @@ class ApiService {
   async makeRequest(endpoint, options = {}) {
     const urls = [this.baseURL, ...this.fallbackURLs];
     
-    for (const url of urls) {
-      try {
-        const fullUrl = url.endsWith('/api') ? `${url}${endpoint}` : `${url}/api${endpoint}`;
+          for (const url of urls) {
+        try {
+          // تحسين بناء URL للتعامل مع الحالات المختلفة
+          let fullUrl;
+          if (url.endsWith('/api')) {
+            fullUrl = `${url}${endpoint}`;
+          } else if (url.endsWith('/api/health')) {
+            fullUrl = `${url.replace('/api/health', '')}/api${endpoint}`;
+          } else {
+            fullUrl = `${url}/api${endpoint}`;
+          }
         
         const response = await fetch(fullUrl, {
           ...options,
@@ -290,7 +299,15 @@ class ApiService {
       
       for (const url of urls) {
         try {
-          const fullUrl = url.endsWith('/api') ? `${url}/upload-profile-image` : `${url}/api/upload-profile-image`;
+          // تحسين بناء URL للتعامل مع الحالات المختلفة
+          let fullUrl;
+          if (url.endsWith('/api')) {
+            fullUrl = `${url}/upload-profile-image`;
+          } else if (url.endsWith('/api/health')) {
+            fullUrl = `${url.replace('/api/health', '')}/api/upload-profile-image`;
+          } else {
+            fullUrl = `${url}/api/upload-profile-image`;
+          }
           
           const response = await fetch(fullUrl, {
             method: 'POST',
