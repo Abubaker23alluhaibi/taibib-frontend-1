@@ -92,7 +92,7 @@ export const AuthProvider = ({ children }) => {
         try {
           console.log('🔍 محاولة الاتصال بـ:', apiUrl);
           
-          res = await fetch(`${apiUrl}/auth/login`, {
+          res = await fetch(`${apiUrl}/api/auth/login`, {
             method: 'POST',
             headers: { 
               'Content-Type': 'application/json',
