@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { useTranslation } from 'react-i18next';
+import apiService from './services/apiService';
 
 function AdminLogin() {
   const { t } = useTranslation();
@@ -23,31 +24,18 @@ function AdminLogin() {
     console.log('🔍 محاولة تسجيل دخول الأدمن:', { email, password });
 
     try {
-      // ربط مع الخادم الحقيقي
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          password,
-          loginType: 'admin'
-        }),
-      });
+      // استخدام دالة adminLogin المخصصة
+      const loginData = await apiService.adminLogin(email, password);
 
-      console.log('📡 استجابة الخادم:', response.status);
+      console.log('📊 بيانات الاستجابة:', loginData);
 
-      const data = await response.json();
-      console.log('📊 بيانات الاستجابة:', data);
-
-      if (response.ok) {
+      if (loginData && loginData.user) {
         // تسجيل دخول ناجح
         const adminUser = { 
           email, 
           user_type: 'admin', 
           name: 'مدير النظام',
-          ...data.user 
+          ...loginData.user 
         };
         
         console.log('✅ تسجيل دخول ناجح:', adminUser);
@@ -64,12 +52,12 @@ function AdminLogin() {
         navigate('/admin');
       } else {
         // خطأ في تسجيل الدخول
-        console.error('❌ خطأ في تسجيل الدخول:', data.error);
-        setError(data.error || 'بيانات الدخول غير صحيحة');
+        console.error('❌ خطأ في تسجيل الدخول:', loginData.error);
+        setError(loginData.error || 'بيانات الدخول غير صحيحة');
       }
     } catch (error) {
       console.error('❌ خطأ في الاتصال بالخادم:', error);
-              setError(t('error_server_connection'));
+      setError(t('error_server_connection'));
     }
   };
 

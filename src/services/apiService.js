@@ -317,6 +317,25 @@ class ApiService {
       throw error;
     }
   }
+
+  // Admin login
+  async adminLogin(email, password) {
+    try {
+      const result = await this.makeRequest('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({
+          email,
+          password,
+          loginType: 'admin'
+        })
+      });
+      console.log('✅ تم تسجيل دخول الأدمن بنجاح');
+      return result.data;
+    } catch (error) {
+      console.error('❌ خطأ في تسجيل دخول الأدمن:', error);
+      throw error;
+    }
+  }
 }
 
 const apiService = new ApiService();
