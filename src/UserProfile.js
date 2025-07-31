@@ -12,6 +12,7 @@ function UserProfile() {
   
   const [form, setForm] = useState({
     name: '',
+    first_name: '',
     email: '',
     phone: '',
     profileImage: ''
@@ -69,6 +70,7 @@ function UserProfile() {
       console.log('🔍 UserProfile - استخدام profile data');
       setForm({
         name: profile.name || profile.first_name || '',
+        first_name: profile.name || profile.first_name || '',
         email: profile.email || '',
         phone: profile.phone || '',
         profileImage: profile.profileImage || profile.avatar || ''
@@ -79,6 +81,7 @@ function UserProfile() {
       // إذا لم يكن هناك profile، استخدم user
       setForm({
         name: user.name || user.first_name || '',
+        first_name: user.name || user.first_name || '',
         email: user.email || '',
         phone: user.phone || '',
         profileImage: user.profileImage || user.avatar || ''
@@ -137,7 +140,7 @@ function UserProfile() {
     setMsg('');
     setLoading(true);
     
-    if (!form.name || !form.email || !form.phone) {
+    if (!form.first_name || !form.email || !form.phone) {
       setError(t('fill_required_fields'));
       setLoading(false);
       return;
@@ -148,19 +151,13 @@ function UserProfile() {
       
       // إذا كان هناك صورة جديدة، ارفعها أولاً
       if (selectedImage) {
-        const formData = new FormData();
-        formData.append('profileImage', selectedImage);
-        formData.append('userId', profile?._id || user?._id);
-        
-        const uploadRes = await fetch(`${process.env.REACT_APP_API_URL}/upload-profile-image`, {
-          method: 'POST',
-          body: formData
-        });
-        
-        if (uploadRes.ok) {
-          const uploadData = await uploadRes.json();
+        try {
+          const uploadData = await apiService.uploadProfileImage(
+            profile?._id || user?._id,
+            selectedImage
+          );
           updatedForm.profileImage = uploadData.imagePath;
-        } else {
+        } catch (error) {
           throw new Error(t('image_upload_error'));
         }
       }
@@ -219,28 +216,18 @@ function UserProfile() {
     try {
       console.log('📤 تغيير كلمة المرور...');
       
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/change-password/${profile?._id || user?._id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          currentPassword: passwordForm.currentPassword,
-          newPassword: passwordForm.newPassword
-        })
-      });
+      await apiService.changePassword(
+        profile?._id || user?._id,
+        passwordForm.currentPassword,
+        passwordForm.newPassword
+      );
 
-      const data = await res.json();
-      console.log('📋 استجابة تغيير كلمة المرور:', data);
-
-      if (res.ok) {
-        setMsg('تم تغيير كلمة المرور بنجاح');
-        setShowPasswordModal(false);
-        setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
-      } else {
-        setError(data.error || t('error_changing_password'));
-      }
+      setMsg('تم تغيير كلمة المرور بنجاح');
+      setShowPasswordModal(false);
+      setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
     } catch (err) {
       console.error('❌ خطأ في تغيير كلمة المرور:', err);
-      setError(t('error_changing_password'));
+      setError(err.message || t('error_changing_password'));
     } finally {
       setLoading(false);
     }

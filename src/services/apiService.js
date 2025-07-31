@@ -265,6 +265,57 @@ class ApiService {
       };
     }
   }
+
+  // Change password
+  async changePassword(userId, currentPassword, newPassword) {
+    try {
+      const result = await this.makeRequest(`/change-password/${userId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ currentPassword, newPassword })
+      });
+      console.log('✅ تم تغيير كلمة المرور بنجاح');
+      return result.data;
+    } catch (error) {
+      console.error('❌ خطأ في تغيير كلمة المرور:', error);
+      throw error;
+    }
+  }
+
+  // Upload profile image
+  async uploadProfileImage(userId, imageFile) {
+    try {
+      const formData = new FormData();
+      formData.append('profileImage', imageFile);
+      formData.append('userId', userId);
+
+      const urls = [this.baseURL, ...this.fallbackURLs];
+      
+      for (const url of urls) {
+        try {
+          const fullUrl = url.endsWith('/api') ? `${url}/upload-profile-image` : `${url}/api/upload-profile-image`;
+          
+          const response = await fetch(fullUrl, {
+            method: 'POST',
+            body: formData
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            console.log('✅ تم رفع الصورة الشخصية بنجاح');
+            return data;
+          }
+        } catch (error) {
+          console.log(`❌ فشل رفع الصورة إلى ${url}:`, error.message);
+          continue;
+        }
+      }
+      
+      throw new Error('فشل رفع الصورة لجميع الخوادم');
+    } catch (error) {
+      console.error('❌ خطأ في رفع الصورة الشخصية:', error);
+      throw error;
+    }
+  }
 }
 
 export default new ApiService(); 
