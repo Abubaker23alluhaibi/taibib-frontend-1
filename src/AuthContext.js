@@ -78,8 +78,8 @@ export const AuthProvider = ({ children }) => {
       // Fallback API URLs in case of SSL issues
       const apiUrls = [
         process.env.REACT_APP_API_URL,
+        'https://api.tabib-iq.com',
         'https://exquisite-optimism-production-501e.up.railway.app',
-        'https://api.tabib-iq.com/api',
         'https://taibib-bckend-1-production.up.railway.app/api',
         'http://localhost:5000/api'
       ].filter(Boolean); // Remove empty URLs
