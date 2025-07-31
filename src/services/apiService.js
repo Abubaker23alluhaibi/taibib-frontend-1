@@ -336,6 +336,46 @@ class ApiService {
       throw error;
     }
   }
+
+  // Get admin dashboard data
+  async getAdminDashboard() {
+    try {
+      const result = await this.makeRequest('/admin/dashboard');
+      console.log('✅ تم جلب بيانات لوحة التحكم بنجاح');
+      return result.data;
+    } catch (error) {
+      console.error('❌ خطأ في جلب بيانات لوحة التحكم:', error);
+      throw error;
+    }
+  }
+
+  // Approve doctor
+  async approveDoctor(doctorId) {
+    try {
+      const result = await this.makeRequest(`/doctors/${doctorId}/approve`, {
+        method: 'PUT'
+      });
+      console.log('✅ تم الموافقة على الطبيب بنجاح');
+      return result.data;
+    } catch (error) {
+      console.error('❌ خطأ في الموافقة على الطبيب:', error);
+      throw error;
+    }
+  }
+
+  // Reject doctor
+  async rejectDoctor(doctorId) {
+    try {
+      const result = await this.makeRequest(`/doctors/${doctorId}/reject`, {
+        method: 'PUT'
+      });
+      console.log('✅ تم رفض الطبيب بنجاح');
+      return result.data;
+    } catch (error) {
+      console.error('❌ خطأ في رفض الطبيب:', error);
+      throw error;
+    }
+  }
 }
 
 const apiService = new ApiService();

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { useTranslation } from 'react-i18next';
+import apiService from './services/apiService';
 
 function AdminDashboard() {
   const [users, setUsers] = useState([]);
@@ -116,19 +117,14 @@ function AdminDashboard() {
     try {
       console.log('📤 جلب بيانات لوحة التحكم...');
       
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/dashboard`);
-      const data = await response.json();
+      // استخدام دالة getAdminDashboard المخصصة
+      const dashboardData = await apiService.getAdminDashboard();
       
-      if (response.ok && data.success) {
-        console.log('✅ تم جلب البيانات بنجاح:', data);
-        setUsers(data.users || []);
-        setDoctors(data.doctors || []);
-        setAppointments(data.appointments || []);
-        setAnalytics(data.stats || {});
-      } else {
-        console.error('❌ خطأ في جلب البيانات:', data.error);
-        setError(data.error || 'خطأ في جلب البيانات');
-      }
+      console.log('✅ تم جلب البيانات بنجاح:', dashboardData);
+      setUsers(dashboardData.users || []);
+      setDoctors(dashboardData.doctors || []);
+      setAppointments(dashboardData.appointments || []);
+      setAnalytics(dashboardData.stats || {});
     } catch (error) {
       console.error('❌ خطأ في الاتصال:', error);
       setError('خطأ في الاتصال بالخادم');
@@ -159,20 +155,12 @@ function AdminDashboard() {
     }
     
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/doctors/${doctorId}/approve`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' }
-      });
-      
-      if (response.ok) {
-        fetchData(); // إعادة تحميل البيانات
-        alert('✅ تم الموافقة على الطبيب بنجاح\nسيتم إرسال إشعار للطبيب بالبريد الإلكتروني');
-      } else {
-        alert('❌ ' + t('error_approving_doctor'));
-      }
+      await apiService.approveDoctor(doctorId);
+      fetchData(); // إعادة تحميل البيانات
+      alert('✅ تم الموافقة على الطبيب بنجاح\nسيتم إرسال إشعار للطبيب بالبريد الإلكتروني');
     } catch (error) {
       console.error('خطأ في الموافقة على الطبيب:', error);
-              alert('❌ ' + t('error_approving_doctor') + ' - ' + t('error_server_connection'));
+      alert('❌ ' + t('error_approving_doctor') + ' - ' + t('error_server_connection'));
     }
   };
 
@@ -191,21 +179,13 @@ function AdminDashboard() {
     }
     
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/doctors/${doctorId}/reject`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' }
-        });
-        
-        if (response.ok) {
-          fetchData(); // إعادة تحميل البيانات
+        await apiService.rejectDoctor(doctorId);
+        fetchData(); // إعادة تحميل البيانات
         alert('❌ تم رفض الطبيب بنجاح\nسيتم إرسال إشعار للطبيب بالبريد الإلكتروني');
-        } else {
-        alert('❌ ' + t('error_rejecting_doctor'));
-        }
       } catch (error) {
         console.error('خطأ في رفض الطبيب:', error);
-              alert('❌ ' + t('error_rejecting_doctor') + ' - ' + t('error_server_connection'));
-    }
+        alert('❌ ' + t('error_rejecting_doctor') + ' - ' + t('error_server_connection'));
+      }
   };
 
   // دالة البحث
