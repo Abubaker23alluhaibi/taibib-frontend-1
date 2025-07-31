@@ -3,7 +3,8 @@ const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://api.tabib-iq.com'
 
 class ApiService {
   constructor() {
-    this.baseURL = API_BASE_URL;
+    // تنظيف URL الأساسي من /api/health إذا كان موجوداً
+    this.baseURL = API_BASE_URL.replace('/api/health', '');
     this.fallbackURLs = [
       'https://api.tabib-iq.com',
       'https://tabib-iq-backend-production.up.railway.app'
@@ -14,17 +15,18 @@ class ApiService {
   async makeRequest(endpoint, options = {}) {
     const urls = [this.baseURL, ...this.fallbackURLs];
     
-          for (const url of urls) {
-        try {
-          // تحسين بناء URL للتعامل مع الحالات المختلفة
-          let fullUrl;
-          if (url.endsWith('/api')) {
-            fullUrl = `${url}${endpoint}`;
-          } else if (url.endsWith('/api/health')) {
-            fullUrl = `${url.replace('/api/health', '')}/api${endpoint}`;
-          } else {
-            fullUrl = `${url}/api${endpoint}`;
-          }
+    for (const url of urls) {
+      try {
+        // تنظيف URL من /api/health إذا كان موجوداً
+        const cleanUrl = url.replace('/api/health', '');
+        
+        // بناء URL النهائي
+        let fullUrl;
+        if (cleanUrl.endsWith('/api')) {
+          fullUrl = `${cleanUrl}${endpoint}`;
+        } else {
+          fullUrl = `${cleanUrl}/api${endpoint}`;
+        }
         
         const response = await fetch(fullUrl, {
           ...options,
@@ -299,14 +301,15 @@ class ApiService {
       
       for (const url of urls) {
         try {
-          // تحسين بناء URL للتعامل مع الحالات المختلفة
+          // تنظيف URL من /api/health إذا كان موجوداً
+          const cleanUrl = url.replace('/api/health', '');
+          
+          // بناء URL النهائي
           let fullUrl;
-          if (url.endsWith('/api')) {
-            fullUrl = `${url}/upload-profile-image`;
-          } else if (url.endsWith('/api/health')) {
-            fullUrl = `${url.replace('/api/health', '')}/api/upload-profile-image`;
+          if (cleanUrl.endsWith('/api')) {
+            fullUrl = `${cleanUrl}/upload-profile-image`;
           } else {
-            fullUrl = `${url}/api/upload-profile-image`;
+            fullUrl = `${cleanUrl}/api/upload-profile-image`;
           }
           
           const response = await fetch(fullUrl, {

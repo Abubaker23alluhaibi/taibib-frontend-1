@@ -19,13 +19,14 @@ export function buildApiUrl(endpoint, baseUrl = API_BASE_URL) {
   // Remove leading slash from endpoint if present
   const cleanEndpoint = endpoint.startsWith('/') ? endpoint.slice(1) : endpoint;
   
+  // تنظيف URL من /api/health إذا كان موجوداً
+  const cleanBaseUrl = baseUrl.replace('/api/health', '');
+  
   // Handle different URL patterns
-  if (baseUrl.endsWith('/api')) {
-    return `${baseUrl}/${cleanEndpoint}`;
-  } else if (baseUrl.endsWith('/api/health')) {
-    return `${baseUrl.replace('/api/health', '')}/api/${cleanEndpoint}`;
+  if (cleanBaseUrl.endsWith('/api')) {
+    return `${cleanBaseUrl}/${cleanEndpoint}`;
   } else {
-    return `${baseUrl}/api/${cleanEndpoint}`;
+    return `${cleanBaseUrl}/api/${cleanEndpoint}`;
   }
 }
 
@@ -112,8 +113,9 @@ export function getImageUrl(imagePath) {
     return imagePath;
   }
   
-  // Try primary URL first
-  const primaryUrl = buildApiUrl('', API_BASE_URL).replace('/api', '');
+  // Try primary URL first - تنظيف URL من /api/health
+  const cleanBaseUrl = API_BASE_URL.replace('/api/health', '');
+  const primaryUrl = cleanBaseUrl.endsWith('/api') ? cleanBaseUrl.replace('/api', '') : cleanBaseUrl;
   return `${primaryUrl}${imagePath}`;
 }
 
