@@ -5,10 +5,7 @@ class ApiService {
   constructor() {
     this.baseURL = API_BASE_URL;
     this.fallbackURLs = [
-      'https://api.tabib-iq.com',
-      'https://exquisite-optimism-production-501e.up.railway.app',
-      'https://taibib-bckend-1-production.up.railway.app/api',
-      'http://localhost:5000/api'
+      'https://api.tabib-iq.com'
     ];
   }
 
